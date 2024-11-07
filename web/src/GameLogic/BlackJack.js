@@ -72,6 +72,7 @@ const playBlackJack = async () => {
   const { playerPile: playerHand, dealerPile: dealerHand } =
     await dealInitialCards(deck_id, playerPile, dealerPile);
 
+  // Check for win at start of game
   if (
     (await checkBlackjack(deck_id, playerHand)) &&
     (await checkBlackjack(deck_id, dealerHand))
@@ -83,7 +84,7 @@ const playBlackJack = async () => {
     return "Dealer wins with a BlackJack!";
   }
 
-  // Step 3: Player's Turn
+  // Player's Turn
   let playerValue = await calculateHandValue(deck_id, playerHand);
   let playerTurnOver = false;
 
@@ -102,7 +103,7 @@ const playBlackJack = async () => {
     }
   }
 
-  // Step 4: Dealer's Turn
+  // Dealer's Turn
   let dealerValue = await calculateHandValue(deck_id, dealerHand);
   while (dealerValue < 17) {
     const newCard = (await drawCard(deck_id)).cards[0];
@@ -112,7 +113,7 @@ const playBlackJack = async () => {
     if (dealerValue > 21) return "Dealer busts! Player wins.";
   }
 
-  // Step 5: Compare hands
+  // Compare hands for winner
   console.log(`Player's final hand value: ${playerValue}`);
   console.log(`Dealer's final hand value: ${dealerValue}`);
 
