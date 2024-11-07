@@ -11,11 +11,11 @@ const useMQTT = <T,>(topic: string): UseMQTT<T> => {
   const [messages, setMessages] = useState<T[]>([]);
 
   useEffect(() => {
-    const mqttClient = mqtt.connect('ws://localhost:9001');
+    const mqttClient = mqtt.connect("wss://test.mosquitto.org:8081");
 
     mqttClient.on('connect', () => {
         console.log('Connected to MQTT Broker');
-        mqttClient.subscribe(topic);
+        mqttClient.subscribe(`IS5700/USU/McMullin/{topic}`);
       });
   
 
@@ -46,7 +46,7 @@ const useMQTT = <T,>(topic: string): UseMQTT<T> => {
   const sendMessage = (message: T) => {
     if (client) {
         const messageString = typeof message === 'string' ? message : JSON.stringify(message);
-        client.publish(topic, messageString);
+        client.publish(`IS5700/USU/McMullin/{topic}`, messageString);
       }
   };
 
