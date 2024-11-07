@@ -1,16 +1,17 @@
+import { ReactNode } from "react";
 import Header from "./Header";
-import Container from '@mui/material/Container';
 
-import { ReactNode } from 'react';
+type LayoutProps = {
+  children: ReactNode;
+};
 
-export default function Layout({ children }: { children: ReactNode }) {
+const Layout = ({ children }: LayoutProps) => {
+  return (
+    <div>
+      <Header />
+      <main>{children}</main>
+    </div>
+  );
+};
 
-    return (
-        <>
-        <Header className="top-0" />
-        <Container>
-            {children}
-        </Container>
-        </>
-    )
-}
+export default Layout;
