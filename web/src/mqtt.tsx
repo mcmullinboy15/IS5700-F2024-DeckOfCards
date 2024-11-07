@@ -14,8 +14,8 @@ const useMQTT = <T,>(topic: string): UseMQTT<T> => {
     const mqttClient = mqtt.connect("wss://test.mosquitto.org:8081");
 
     mqttClient.on('connect', () => {
-        console.log('Connected to MQTT Broker');
-        mqttClient.subscribe(`IS5700/USU/McMullin/{topic}`);
+        console.log(`Connected to MQTT Broker: host: test.mosquitto.org, port: 8081, topic: IS5700/USU/McMullin/${topic}`);
+        mqttClient.subscribe(`IS5700/USU/McMullin/${topic}`);
       });
   
 
@@ -46,7 +46,7 @@ const useMQTT = <T,>(topic: string): UseMQTT<T> => {
   const sendMessage = (message: T) => {
     if (client) {
         const messageString = typeof message === 'string' ? message : JSON.stringify(message);
-        client.publish(`IS5700/USU/McMullin/{topic}`, messageString);
+        client.publish(`IS5700/USU/McMullin/${topic}`, messageString);
       }
   };
 
