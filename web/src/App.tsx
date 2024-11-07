@@ -4,11 +4,11 @@ import Layout from "./Layout";
 
 function App() {
   return (
-    <Layout>
-      <Router>
+    <Router>
+      <Layout>
         <RouterProvider />
-      </Router>
-    </Layout>
+      </Layout>
+    </Router>
   );
 }
 
