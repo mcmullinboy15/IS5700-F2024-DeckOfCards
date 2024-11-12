@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   AppBar,
@@ -9,6 +10,21 @@ import {
 import { Menu } from "@mui/icons-material";
 
 export default function Header() {
+
+  const [profile, setProfile] = useState<string | null>(null);  // TODO: set profile state to something from Auth Provider (not just a string)
+
+  function handleLogin() {  // TODO: direct to login page
+    setProfile("Bob");
+  }
+
+  function handleLogout() {  // TODO: USER LOGOUT with Auth Provider
+    setProfile(null);
+  }
+
+  function handleProfile() { // TODO: direct to profile page
+    console.log("Profile");
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -25,7 +41,14 @@ export default function Header() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Deck of Cards Project
           </Typography>
-          <Button color="inherit">Login</Button>
+          {profile ? (
+            <>
+            <Button onClick={handleProfile} color="inherit">{profile}</Button>  {/* TODO: Get username from Auth provider */}
+            <Button onClick={handleLogout} color="inherit">Logout</Button>
+            </>
+            ) : (
+            <Button onClick={handleLogin} color="inherit">Login</Button> )  
+          }
         </Toolbar>
       </AppBar>
     </Box>
