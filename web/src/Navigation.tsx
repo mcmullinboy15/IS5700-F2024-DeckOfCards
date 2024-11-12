@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 import {
   Drawer,
   IconButton,
@@ -18,9 +16,9 @@ const Navigation: React.FC = () => {
 
   const [open, setOpen] = useState(true);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  // const handleDrawerOpen = () => {
+  //   setOpen(true);
+  // };
 
   const handleDrawerClose = () => {
     setOpen(false);
