@@ -1,34 +1,15 @@
-import { useState } from 'react'
-import useMQTT from './mqtt'
-import './App.css'
+import { BrowserRouter as Router } from "react-router-dom";
+import { RouterProvider } from "./components/layout/Router";
+import Layout from "./Layout";
 
 function App() {
-  const { messages, sendMessage } = useMQTT<string>('ryanTest');
-  const [input, setInput] = useState<string>('');
-
-  const handleSendMessage = () => {
-    sendMessage(input);
-    setInput('');
-  };
-
   return (
-    <>
-      <div>
-      <h2>MQTT Chat</h2>
-      <div>
-        {messages.map((message, index) => (
-          <p key={index}>{message}</p>
-        ))}
-      </div>
-      <input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Type a message"
-      />
-      <button onClick={handleSendMessage}>Send</button>
-    </div>
-    </>
-  )
+    <Router>
+      <Layout>
+        <RouterProvider />
+      </Layout>
+    </Router>
+  );
 }
 
-export default App
+export default App;
