@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
-import mqtt from "mqtt";
+import { useState, useRef, useEffect } from "react";
 import "./ChatComponent.css";
+import useMQTT from "../mqtt";
 
 //in order to make this work, we need to but <ChatComponent /> in App.tsx
 
@@ -11,78 +11,16 @@ type Message = {
 };
 
 const ChatComponent = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [client, setClient] = useState<mqtt.MqttClient | null>(null);
-  const [connected, setConnected] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [connectionError, setConnectionError] = useState("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // Connect to MQTT broker
-  useEffect(() => {
-    // This should eventually be tied to the user's profile/id
-    const clientId = "webchat_" + Math.random().toString(16).substring(2, 8);
+  const { messages, sendMessage, error, connected } = useMQTT<Message>("chat");
 
-    // I used mosquitto broker for this
-    const mqttClient = mqtt.connect("wss://test.mosquitto.org:8081", {
-      clientId: clientId,
-      clean: true,
-      connectTimeout: 4000,
-      reconnectPeriod: 1000,
-    });
-
-    mqttClient.on("connect", () => {
-      console.log("Connected to MQTT broker");
-      setConnected(true);
-      setConnectionError("");
-
-      // Technically there is only one "channel" to chat on and the user is automatically subscribed to that
-      mqttClient.subscribe("webchat/public", (err) => {
-        if (err) {
-          console.error("Subscription error:", err);
-          setConnectionError("Failed to subscribe to chat");
-        }
-      });
-    });
-
-    mqttClient.on("message", (_, payload) => {
-      try {
-        const message = JSON.parse(payload.toString());
-        setMessages((prev) => [...prev, message]);
-      } catch (err) {
-        console.error("Error parsing message:", err);
-      }
-    });
-
-    mqttClient.on("error", (err) => {
-      console.error("MQTT error:", err);
-      setConnectionError("Connection error occurred");
-      setConnected(false);
-    });
-
-    mqttClient.on("offline", () => {
-      setConnected(false);
-      setConnectionError("Connection lost. Reconnecting...");
-    });
-
-    setClient(mqttClient);
-
-    return () => {
-      if (mqttClient) {
-        mqttClient.end();
-      }
-    };
-  }, []);
-
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const sendMessage = (e: React.FormEvent<HTMLFormElement>) => {
+  const sendMessageEvent = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!newMessage.trim() || !client || !connected) return;
+    if (!newMessage.trim()) return;
 
     const messageData = {
       text: newMessage,
@@ -90,18 +28,17 @@ const ChatComponent = () => {
       timestamp: new Date().toISOString(),
     };
 
-    try {
-      client.publish("webchat/public", JSON.stringify(messageData));
-      setNewMessage("");
-    } catch (err) {
-      console.error("Error sending message:", err);
-      setConnectionError("Failed to send message");
-    }
+    sendMessage(messageData);
+    setNewMessage("");
   };
 
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
   };
+
+  useEffect(() => {
+    console.log("last message:", messages[messages.length - 1]);
+  }, [messages]);
 
   return (
     <div className={`chat-widget ${isMinimized ? "minimized" : ""}`}>
@@ -109,7 +46,7 @@ const ChatComponent = () => {
         <div className="chat-header" onClick={toggleMinimize}>
           <h3>
             Chat {!connected && " (Disconnected)"}
-            {connectionError && ` - ${connectionError}`}
+            {error && ` - ${error.message}`}
           </h3>
           <button className="minimize-button">{isMinimized ? "+" : "-"}</button>
         </div>
@@ -129,7 +66,7 @@ const ChatComponent = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={sendMessage} className="chat-input-form">
+            <form onSubmit={sendMessageEvent} className="chat-input-form">
               <input
                 type="text"
                 value={newMessage}
