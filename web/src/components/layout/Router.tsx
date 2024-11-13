@@ -6,7 +6,7 @@ export const RouterProvider = () => {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/profile" element={<Profile/>} />
+      <Route path="/profile/:userId" element={<Profile/>} />
     </Routes>
   );
 };

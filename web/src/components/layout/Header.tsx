@@ -9,9 +9,12 @@ import {
   Button,
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 
 export default function Header() {
+  const user = useContext(AuthContext);
 
   const navigator = useNavigate();
 
@@ -26,7 +29,9 @@ export default function Header() {
   }
 
   function handleProfile() { // TODO: direct to profile page
-    navigator("/profile");
+    
+    
+    navigator(`/profile/${user?.id}`);
   }
 
   return (
