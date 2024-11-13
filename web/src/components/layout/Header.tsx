@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   AppBar,
@@ -9,7 +10,10 @@ import {
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 
+
 export default function Header() {
+
+  const navigator = useNavigate();
 
   const [profile, setProfile] = useState<string | null>(null);  // TODO: set profile state to something from Auth Provider (not just a string)
 
@@ -22,7 +26,7 @@ export default function Header() {
   }
 
   function handleProfile() { // TODO: direct to profile page
-    console.log("Profile");
+    navigator("/profile");
   }
 
   return (
@@ -41,14 +45,16 @@ export default function Header() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Deck of Cards Project
           </Typography>
+          
+          <Button onClick={() => navigator("/")} color="inherit">Home</Button>
           {profile ? (
             <>
             <Button onClick={handleProfile} color="inherit">{profile}</Button>  {/* TODO: Get username from Auth provider */}
             <Button onClick={handleLogout} color="inherit">Logout</Button>
             </>
             ) : (
-            <Button onClick={handleLogin} color="inherit">Login</Button> )  
-          }
+              <Button onClick={handleLogin} color="inherit">Login</Button> )  
+            }
         </Toolbar>
       </AppBar>
     </Box>
