@@ -4,22 +4,34 @@ import Avatar from "@mui/material/Avatar";
 import { deepOrange, deepPurple } from "@mui/material/colors";
 import Typography from "@mui/material/Typography";
 import { useParams } from "react-router-dom";
+import { User } from "../context/AuthContext";
+import { useState, useEffect } from "react";
 
 export default function Profile() {
-  const { userId } = useParams();
+  const {userId} = useParams();
+  const [profile, setProfile] = useState<User | null>(null);  
 
-if (!authContext) {
-    return <div>Loading...</div>
+  const user: User = {  // dummy data  TODO: get from the database with userId
+    id: userId as string,
+    email: "bob@gmail.com",
+    firstname: "Bobby",
+    lastname: "Mcgee",
 }
 
-  if (authContext) {
+    useEffect(() => {
+        if (user && !profile) {
+        setProfile(user);
+        }
+    }, [user]);
+
+
+if (!profile) {
+    return <div>Loading...</div>  // TODO: insert loading modal
+}
+
+  if (profile) {
     
-    const user = {
-        id: 1,
-        email: "bob@gmail.com",
-        firstname: "Bobby",
-        lastname: "Mcgee",
-    }
+   
   return (
     <>
       <Container fixed>
@@ -41,15 +53,15 @@ if (!authContext) {
               fontSize: 80,
             }}
           >
-            {user?.firstname[0]} {/* TODO GRAB THE FIRST LETTER CORRECTLY */}
+            {profile.firstname[0]} {/* TODO GRAB THE FIRST LETTER CORRECTLY */}
           </Avatar>
           <Typography variant="h2" gutterBottom>
-            {user?.firstname} {user?.lastname}
+            {profile.firstname} {profile.lastname}
           </Typography>
         </Box>
         <Box display="flex" justifyContent={"center"}>
             <Typography variant="h4" gutterBottom>
-                Email: {user?.email}
+                Email: {profile.email}
             </Typography>
         </Box>
       </Container>
@@ -57,3 +69,4 @@ if (!authContext) {
   );
 }
 }
+

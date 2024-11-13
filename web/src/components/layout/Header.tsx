@@ -9,22 +9,35 @@ import {
   Button,
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useContext, useEffect } from "react";
+import { AuthContext, User } from "../../context/AuthContext";
 
 
 export default function Header() {
-  const user = useContext(AuthContext);
+  // const user = useContext(AuthContext);  // this will be the real call
+
+  const user: User = {  // dummy data
+    id: "1",
+    email: "bob@gmail.com",
+    firstname: "Bobby",
+    lastname: "Mcgee",
+}
 
   const navigator = useNavigate();
 
-  const [profile, setProfile] = useState<string | null>(null);  // TODO: set profile state to something from Auth Provider (not just a string)
+  const [profile, setProfile] = useState<User | null>(null);  // TODO: set profile state to something from Auth Provider (not just a string)
+
+  useEffect(() => {
+    if (user && !profile) {
+      setProfile(user);
+    }
+  }, [user]);
 
   function handleLogin() {  // TODO: direct to login page
-    setProfile("Bob");
+    setProfile(user);
   }
 
-  function handleLogout() {  // TODO: USER LOGOUT with Auth Provider
+  function handleLogout() {  // TODO: redirect to login and clear user from Auth provider
     setProfile(null);
   }
 
@@ -54,7 +67,7 @@ export default function Header() {
           <Button onClick={() => navigator("/")} color="inherit">Home</Button>
           {profile ? (
             <>
-            <Button onClick={handleProfile} color="inherit">{profile}</Button>  {/* TODO: Get username from Auth provider */}
+            <Button onClick={handleProfile} color="inherit">{profile.firstname}</Button>  {/* TODO: Get username from Auth provider */}
             <Button onClick={handleLogout} color="inherit">Logout</Button>
             </>
             ) : (
