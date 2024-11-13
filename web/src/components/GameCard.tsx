@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 interface GameCardProps {
   game: {
     id: number;
@@ -8,6 +10,11 @@ interface GameCardProps {
 }
 
 const GameCard: React.FC<GameCardProps> = ({ game, onClickAction }) => {
+  const navigate = useNavigate();
+  const handleNavToLobby = (gameName: string) => {
+    navigate(`/lobby/${gameName}`);
+  }
+
   return (
     <div className="game-card">
       <h2>{game.name}</h2>
@@ -22,6 +29,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClickAction }) => {
           </button>
         ))}
       </div>
+      <button onClick={() => handleNavToLobby(game.name)}>Enter Lobby</button>
     </div>
   );
 };
