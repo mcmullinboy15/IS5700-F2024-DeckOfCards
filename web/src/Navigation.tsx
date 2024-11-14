@@ -14,7 +14,8 @@ import { Link, useLocation } from "react-router-dom";
 
 const Navigation: React.FC = () => {
   const drawerWidth = 300;
-  const [open, setOpen] = useState(true);
+
+  const [open, setOpen] = useState(false);
 
   const handleDrawerClose = () => {
     setOpen(false);

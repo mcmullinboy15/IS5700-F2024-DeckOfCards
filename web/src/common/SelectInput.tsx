@@ -1,24 +1,34 @@
 import { useForm } from "../context/FormProvider";
+import { useEffect } from "react";
 
-type SelectMenuProps = {
+type SelectInputProps = {
   label: string;
   name: string;
   option: string[];
 };
 
-export const SelectMenu: React.FC<SelectMenuProps> = ({
+export const SelectInput: React.FC<SelectInputProps> = ({
   label,
   name,
   option,
 }) => {
-  const form = useForm();
+  const { state, setValue } = useForm();
+
+  //this runs to allow the default value to be set into state
+  useEffect(() => {
+    if (!state[name]) {
+      setValue(name, option[0]);
+    }
+  }, [state, name, option, setValue]);
 
   return (
     <label>
-      {label}
-      <select name={name} onChange={(e) => form.setValue(name, e.target.value)}>
-        {option.map((value) => (
-          <option value={value}>{value}</option>
+      <span>{label}</span>
+      <select name={name} onChange={(e) => setValue(name, e.target.value)}>
+        {option.map((value, index) => (
+          <option key={index} value={value}>
+            {value}
+          </option>
         ))}
       </select>
     </label>
