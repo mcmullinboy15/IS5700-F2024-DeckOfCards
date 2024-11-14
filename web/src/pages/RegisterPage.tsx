@@ -8,6 +8,7 @@ import { auth } from "../firebase/config";
 import { showToast } from "../components/CustomToast";
 import { useNavigate } from "react-router-dom";
 import { register } from "../firebase/auth";
+import dns from "dns";
 
 type RegisterUser = {
   email: string;
@@ -47,11 +48,12 @@ export const RegisterPage: React.FC = () => {
       return;
     }
 
-    //you could use this to check domains
-    // see /src/backend/domain-check.ts
-    // verifyDomain(input.email, (response: boolean) => {
-    //   console.log(response);
-    // });
+    const isVerified = await verifyDomain(input.email);
+    if (!isVerified) {
+      setError("Email domain is not allowed.");
+      setShake("shake");
+      return;
+    }
 
     register(input.email, input.password)
       .then((user) => {
@@ -107,4 +109,17 @@ export const RegisterPage: React.FC = () => {
       </FormProvider>
     </div>
   );
+};
+
+export const verifyDomain = (email: string): Promise<boolean> => {
+  return new Promise((resolve) => {
+    const domain = email.split("@")[1];
+    dns.resolveMx(domain, (err, addresses) => {
+      if (err || addresses.length === 0) {
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
 };
