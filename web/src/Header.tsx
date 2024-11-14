@@ -7,6 +7,7 @@ import {
   Button,
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -26,6 +27,9 @@ export default function Header() {
             Deck of Cards Project
           </Typography>
           <Button color="inherit">Login</Button>
+          <Link to="/register">
+            <Button color="inherit">Register</Button>
+          </Link>
         </Toolbar>
       </AppBar>
     </Box>
