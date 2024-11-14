@@ -6,13 +6,13 @@ interface GameCardProps {
     name: string;
     actions: string[];
   };
-  onClickAction: (gameName: string, action: string) => void;
+  onClickAction: (gameType: string, action: string) => void;
 }
 
 const GameCard: React.FC<GameCardProps> = ({ game, onClickAction }) => {
   const navigate = useNavigate();
-  const handleNavToLobby = (gameName: string) => {
-    navigate(`/lobby/${gameName}`);
+  const handleNavToLobby = (gameType: string) => {
+    navigate(`/lobby/${gameType}`);
   }
 
   return (

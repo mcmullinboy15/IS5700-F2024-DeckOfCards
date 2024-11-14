@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 
 interface LobbyParams {
-  gameName: string;
+  gameType: string;
 }
 
 const Lobby: React.FC<LobbyParams> = () => {
