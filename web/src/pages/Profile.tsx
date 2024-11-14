@@ -7,9 +7,14 @@ import { useParams } from "react-router-dom";
 import { User } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 
-export default function Profile() {
+export function ProfileWrapper() {
   const { userId } = useParams();
-  const [profile, setProfile] = useState<User | null>(null);
+
+  if (!userId) {
+    return <div>No user id specified</div>;
+  }
+
+  // TODO: fetch user
 
   const user: User = {
     // dummy data  TODO: get from the database with userId
@@ -18,6 +23,12 @@ export default function Profile() {
     firstname: "Bobby",
     lastname: "Mcgee",
   };
+
+  return <Profile user={user} />;
+}
+
+export function Profile({ user }: { user: User }) {
+  const [profile, setProfile] = useState<User | null>(null);
 
   useEffect(() => {
     if (user && !profile) {

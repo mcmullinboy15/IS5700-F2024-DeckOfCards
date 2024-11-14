@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import "./ChatComponent.css";
-import useMQTT, { MQTTMode } from "../mqtt";
+import useMQTT, { MQTTMode } from "../hooks/mqtt";
 
 //in order to make this work, we need to but <ChatComponent /> in App.tsx
 
