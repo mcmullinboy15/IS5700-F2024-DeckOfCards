@@ -2,9 +2,9 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "../../pages/HomePage";
 import ChatComponent from "../ChatComponent";
 import { ProfileWrapper } from "../../pages/Profile";
-import Lobby from "../Lobby";
-import StartGame from "../StartGame";
-import Login from "../Login";
+import Lobby from "../../pages/Lobby";
+import StartGame from "../../pages/StartGame";
+import Login from "../../pages/Login";
 import { RegisterPage } from "../../pages/RegisterPage";
 
 export const RouterProvider = () => {

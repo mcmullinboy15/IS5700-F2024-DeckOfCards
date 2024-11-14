@@ -3,17 +3,44 @@ import { TextInput } from "../common/TextInput";
 import { SelectInput } from "../common/SelectInput";
 import { SubmitButton } from "../common/SubmitButton";
 import { useState } from "react";
+import { validatePassword } from "firebase/auth";
+import { auth } from "../firebase/config";
+import { showToast } from "../components/CustomToast";
+import { useNavigate } from "react-router-dom";
+import { register } from "../firebase/auth";
+
+type RegisterUser = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  access: string;
+};
 
 export const RegisterPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const [error, setError] = useState("");
   const [shake, setShake] = useState("");
 
   //regex provides basic level verification
   const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const handleSubmit = (input: Record<string, any>) => {
+  const handleSubmit = async (input: RegisterUser) => {
     console.log(input);
-    const result = regex.test(input.email);
 
+    if (input.password !== input.confirmPassword) {
+      setError("Passwords do not match.");
+      setShake("shake");
+      return;
+    }
+
+    const passwordStatus = await validatePassword(auth, input.password);
+    if (!passwordStatus.isValid) {
+      setError(JSON.stringify(passwordStatus));
+      setShake("shake");
+      return;
+    }
+
+    const result = regex.test(input.email);
     if (!result) {
       setError("Invaild email address.");
       setShake("shake");
@@ -25,6 +52,21 @@ export const RegisterPage: React.FC = () => {
     // verifyDomain(input.email, (response: boolean) => {
     //   console.log(response);
     // });
+
+    register(input.email, input.password)
+      .then((user) => {
+        console.log("Registered user:", user);
+        showToast("User registered successfully.", "success");
+        setError("");
+        navigate("/");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log("Error registering user:", errorCode, errorMessage);
+        setError(errorMessage);
+        setShake("shake");
+      });
   };
 
   const labelClass = "p-3 text-2xl mx-auto w-full";
@@ -54,7 +96,7 @@ export const RegisterPage: React.FC = () => {
           inputClass={inputClass}
           label="Confirm Password:"
           type="password"
-          name="confirm-password"
+          name="confirmPassword"
         />
         <SelectInput
           label="Select Access:  "

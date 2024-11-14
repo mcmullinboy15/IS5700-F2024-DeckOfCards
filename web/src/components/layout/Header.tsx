@@ -9,29 +9,27 @@ import {
   Button,
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
-import { useEffect } from "react";
-import { User } from "../../context/AuthContext";
+import { User } from "firebase/auth";
 
 export default function Header() {
   // const user = useContext(AuthContext);  // this will be the real call
 
-  const user: User = {
+  const user: Partial<User> = {
     // dummy data
-    id: "1",
+    uid: "1",
     email: "bob@gmail.com",
-    firstname: "Bobby",
-    lastname: "Mcgee",
+    displayName: "Bobby McGee",
   };
 
   const navigator = useNavigate();
 
   const [profile, setProfile] = useState<User | null>(null); // TODO: set profile state to something from Auth Provider (not just a string)
 
-  useEffect(() => {
-    if (user && !profile) {
-      setProfile(user);
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user && !profile) {
+  //     setProfile(user);
+  //   }
+  // }, [user]);
 
   function handleLogout() {
     // TODO: redirect to login and clear user from Auth provider
@@ -41,7 +39,7 @@ export default function Header() {
   function handleProfile() {
     // TODO: direct to profile page
 
-    navigator(`/profile/${user?.id}`);
+    navigator(`/profile/${user?.uid}`);
   }
 
   return (
@@ -67,7 +65,7 @@ export default function Header() {
           {profile ? (
             <>
               <Button onClick={handleProfile} color="inherit">
-                {profile.firstname}
+                {profile.displayName}
               </Button>
               {/* TODO: Get username from Auth provider */}
               <Button onClick={handleLogout} color="inherit">

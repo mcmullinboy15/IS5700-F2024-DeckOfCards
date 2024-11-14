@@ -1,23 +1,26 @@
 import { createContext, useContext, useState } from "react";
 
-type FormContextType = {
-  state: Record<string, any>;
-  setState: (state: Record<string, any>) => void;
+type FormContextType<T> = {
+  state: T;
+  setState: (state: T) => void;
   setValue: (name: string, value: any) => void;
-  errors: Record<string, any>;
-  setErrors: (errors: Record<string, any>) => void;
+  errors: T;
+  setErrors: (errors: T) => void;
   handleSubmit: () => void;
 };
 
-const FormContext = createContext<FormContextType | undefined>(undefined);
+const FormContext = createContext<FormContextType<any> | undefined>(undefined);
 
-type FormProviderProps = {
-  onSubmit: (state: Record<string, any>) => void;
+type FormProviderProps<T> = {
+  onSubmit: (state: T) => void;
   children: React.ReactNode;
 };
 
-export const FormProvider = ({ onSubmit, children }: FormProviderProps) => {
-  const [state, setState] = useState({});
+export const FormProvider = <T,>({
+  onSubmit,
+  children,
+}: FormProviderProps<T>) => {
+  const [state, setState] = useState<T>({} as T);
   const [errors, setErrors] = useState({});
 
   const handleSubmit = () => {

@@ -4,8 +4,8 @@ import Avatar from "@mui/material/Avatar";
 import { deepOrange } from "@mui/material/colors";
 import Typography from "@mui/material/Typography";
 import { useParams } from "react-router-dom";
-import { User } from "../context/AuthContext";
 import { useState, useEffect } from "react";
+import { User } from "firebase/auth";
 
 export function ProfileWrapper() {
   const { userId } = useParams();
@@ -16,19 +16,18 @@ export function ProfileWrapper() {
 
   // TODO: fetch user
 
-  const user: User = {
+  const user: Partial<User> = {
     // dummy data  TODO: get from the database with userId
-    id: userId as string,
+    uid: userId as string,
     email: "bob@gmail.com",
-    firstname: "Bobby",
-    lastname: "Mcgee",
+    displayName: "Bobby McGee",
   };
 
   return <Profile user={user} />;
 }
 
-export function Profile({ user }: { user: User }) {
-  const [profile, setProfile] = useState<User | null>(null);
+export function Profile({ user }: { user: Partial<User> }) {
+  const [profile, setProfile] = useState<Partial<User> | null>(null);
 
   useEffect(() => {
     if (user && !profile) {
@@ -62,11 +61,11 @@ export function Profile({ user }: { user: User }) {
                 fontSize: 80,
               }}
             >
-              {profile.firstname[0]}{" "}
+              {profile.displayName?.[0]}{" "}
               {/* TODO GRAB THE FIRST LETTER CORRECTLY */}
             </Avatar>
             <Typography variant="h2" gutterBottom>
-              {profile.firstname} {profile.lastname}
+              {profile.displayName}
             </Typography>
           </Box>
           <Box display="flex" justifyContent={"center"}>
