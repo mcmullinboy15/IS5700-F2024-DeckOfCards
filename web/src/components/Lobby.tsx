@@ -16,18 +16,30 @@ interface LobbyParams {
 }
 
 const Lobby: React.FC<LobbyParams> = () => {
+<<<<<<< HEAD
   const { gameType } = useParams();
+=======
+  const { gameName } = useParams();
+>>>>>>> 500dee4d28ac2add607b7346df722692c8ca6764
 
   const navigate = useNavigate();
 
   const handleStartGameClick = () => {
+<<<<<<< HEAD
     navigate(`/start-game/${gameType}`);
+=======
+    navigate("/start-game"); // Replace with the path to your StartGame component
+>>>>>>> 500dee4d28ac2add607b7346df722692c8ca6764
   };
 
   return (
     <Container maxWidth="md">
       <Typography variant="h4" component="h1" gutterBottom>
+<<<<<<< HEAD
         {gameType} Lobby
+=======
+        {gameName} Lobby
+>>>>>>> 500dee4d28ac2add607b7346df722692c8ca6764
       </Typography>
       <div className="live-game-table-container">
         <Table className="live-game-table">
