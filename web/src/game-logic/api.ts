@@ -1,4 +1,18 @@
-const axios = require("axios");
+import axios from "axios";
+
+export type Deck = {
+  success: boolean;
+  deck_id: string;
+  remaining: number;
+  shuffled: boolean;
+};
+
+export type Card = {
+  image: string;
+  value: string;
+  suit: string;
+  code: string;
+};
 
 const axiosInstance = axios.create({
   baseURL: "https://deckofcardsapi.com/api",
@@ -9,7 +23,7 @@ const axiosInstance = axios.create({
 });
 
 // Create a Deck
-const createDeck = async (jokers_enabled = true) => {
+export const createDeck = async (jokers_enabled = true) => {
   const response = await axiosInstance.get(
     `/new?jokers_enabled=${jokers_enabled}`
   );
@@ -18,7 +32,7 @@ const createDeck = async (jokers_enabled = true) => {
 };
 
 // Draw a Card
-const drawCard = async (deck_id, count = 1) => {
+export const drawCard = async (deck_id: string, count = 1) => {
   const response = await axiosInstance.get(
     `/deck/${deck_id}/draw/?count=${count}`
   );
@@ -27,7 +41,7 @@ const drawCard = async (deck_id, count = 1) => {
 };
 
 // Shuffle the Deck
-const shuffleDeck = async (deck_id, remaining = false) => {
+export const shuffleDeck = async (deck_id: string, remaining = false) => {
   const response = await axiosInstance.get(
     `/deck/${deck_id}/shuffle/?remaining=${remaining}`
   );
@@ -36,7 +50,7 @@ const shuffleDeck = async (deck_id, remaining = false) => {
 };
 
 // Return cards to the deck
-const returnCards = async (deck_id, cards) => {
+export const returnCards = async (deck_id: string, cards: string[]) => {
   const response = await axiosInstance.get(
     `/deck/${deck_id}/return/?cards=${cards.join(",")}`
   );
@@ -44,7 +58,7 @@ const returnCards = async (deck_id, cards) => {
 };
 
 // Create a partial deck of cards
-const createPartialDeck = async (cardCodes) => {
+export const createPartialDeck = async (cardCodes: string[]) => {
   const response = await axiosInstance.get(
     `/deck/new/?cards=${cardCodes.join(",")}`
   );
@@ -52,7 +66,11 @@ const createPartialDeck = async (cardCodes) => {
 };
 
 // Add cards to a pile
-const addCardsToPile = async (deck_id, pile_name, cards) => {
+export const addCardsToPile = async (
+  deck_id: string,
+  pile_name: string,
+  cards: string[]
+) => {
   const response = await axiosInstance.get(
     `/deck/${deck_id}/pile/${pile_name}/add/?cards=${cards.join(",")}`
   );
@@ -60,7 +78,7 @@ const addCardsToPile = async (deck_id, pile_name, cards) => {
 };
 
 // Shuffle a pile
-const shufflePile = async (deck_id, pile_name) => {
+export const shufflePile = async (deck_id: string, pile_name: string) => {
   const response = await axiosInstance.get(
     `/deck/${deck_id}/pile/${pile_name}/shuffle/`
   );
@@ -68,7 +86,7 @@ const shufflePile = async (deck_id, pile_name) => {
 };
 
 // List cards in a pile
-const listPile = async (deck_id, pile_name) => {
+export const listPile = async (deck_id: string, pile_name: string) => {
   const response = await axiosInstance.get(
     `/deck/${deck_id}/pile/${pile_name}/list/`
   );
@@ -76,7 +94,11 @@ const listPile = async (deck_id, pile_name) => {
 };
 
 // Draw specified cards from a pile
-const drawCardsFromPile = async (deck_id, pile_name, cards) => {
+export const drawCardsFromPile = async (
+  deck_id: string,
+  pile_name: string,
+  cards: string[]
+) => {
   const response = await axiosInstance.get(
     `/deck/${deck_id}/pile/${pile_name}/draw/?cards=${cards.join(",")}`
   );
@@ -84,7 +106,11 @@ const drawCardsFromPile = async (deck_id, pile_name, cards) => {
 };
 
 // Draw a number of cards from the pile
-const drawCountFromPile = async (deck_id, pile_name, count = 1) => {
+export const drawCountFromPile = async (
+  deck_id: string,
+  pile_name: string,
+  count = 1
+) => {
   const response = await axiosInstance.get(
     `/deck/${deck_id}/pile/${pile_name}/draw/?count=${count}`
   );
@@ -92,7 +118,11 @@ const drawCountFromPile = async (deck_id, pile_name, count = 1) => {
 };
 
 // Draw a card from the bottom of a pile (if supported)
-const drawBottomFromPile = async (deck_id, pile_name, count = 1) => {
+export const drawBottomFromPile = async (
+  deck_id: string,
+  pile_name: string,
+  count = 1
+) => {
   const response = await axiosInstance.get(
     `/deck/${deck_id}/pile/${pile_name}/draw/bottom/?count=${count}`
   );
@@ -100,25 +130,13 @@ const drawBottomFromPile = async (deck_id, pile_name, count = 1) => {
 };
 
 // Draw a random card from a pile
-const drawRandomFromPile = async (deck_id, pile_name, count = 1) => {
+export const drawRandomFromPile = async (
+  deck_id: string,
+  pile_name: string,
+  count = 1
+) => {
   const response = await axiosInstance.get(
     `/deck/${deck_id}/pile/${pile_name}/draw/random/?count=${count}`
   );
   return response.data;
-};
-
-// Export the functions (NOTE: this is a little different than ESM (ES Modules), this is CommonJS)
-module.exports = {
-  createDeck,
-  drawCard,
-  shuffleDeck,
-  returnCards,
-  createPartialDeck,
-  addCardsToPile,
-  shufflePile,
-  listPile,
-  drawCardsFromPile,
-  drawCountFromPile,
-  drawBottomFromPile,
-  drawRandomFromPile,
 };

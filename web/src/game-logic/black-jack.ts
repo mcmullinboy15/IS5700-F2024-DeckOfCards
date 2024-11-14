@@ -1,19 +1,20 @@
-const {
+import {
   createDeck,
   drawCard,
   shuffleDeck,
   addCardsToPile,
   listPile,
-} = require("./api");
+  Card,
+} from "./api";
 
-const getCardValue = (card) => {
+const getCardValue = (card: Card) => {
   const faceCards = ["KING", "QUEEN", "JACK"];
   if (faceCards.includes(card.value)) return 10;
   if (card.value === "ACE") return 11;
   return parseInt(card.value);
 };
 
-const calculateHandValue = async (deck_id, pile_name) => {
+const calculateHandValue = async (deck_id: string, pile_name: string) => {
   const { piles } = await listPile(deck_id, pile_name);
   let total = 0;
   let aceCount = 0;
@@ -32,32 +33,40 @@ const calculateHandValue = async (deck_id, pile_name) => {
   return total;
 };
 
-const dealInitialCards = async (deck_id, playerPile, dealerPile) => {
+const dealInitialCards = async (
+  deck_id: string,
+  playerPile: string,
+  dealerPile: string
+) => {
   const playerCards = (await drawCard(deck_id, 2)).cards;
   const dealerCards = (await drawCard(deck_id, 2)).cards;
 
   await addCardsToPile(
     deck_id,
     playerPile,
-    playerCards.map((card) => card.code)
+    playerCards.map((card: Card) => card.code)
   );
   await addCardsToPile(
     deck_id,
     dealerPile,
-    dealerCards.map((card) => card.code)
+    dealerCards.map((card: Card) => card.code)
   );
 
   console.log(
-    `Player's initial hand: ${playerCards.map((card) => card.code).join(", ")}`
+    `Player's initial hand: ${playerCards
+      .map((card: Card) => card.code)
+      .join(", ")}`
   );
   console.log(
-    `Dealer's initial hand: ${dealerCards.map((card) => card.code).join(", ")}`
+    `Dealer's initial hand: ${dealerCards
+      .map((card: Card) => card.code)
+      .join(", ")}`
   );
 
   return { playerPile, dealerPile };
 };
 
-const checkBlackjack = async (deck_id, pile_name) =>
+const checkBlackjack = async (deck_id: string, pile_name: string) =>
   (await calculateHandValue(deck_id, pile_name)) === 21;
 
 // BlackJack game logic
