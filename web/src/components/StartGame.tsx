@@ -18,6 +18,7 @@ const StartGame: React.FC = () => {
   const { gameType } = useParams<{ gameType: string }>();
   const [gameName, setGameName] = useState("");
   const [gameDesc, setGameDesc] = useState("");
+  // @ts-ignore
   const [user, setUser] = useState('user');
   const [players, setPlayers] = useState<Player[]>([]);
 

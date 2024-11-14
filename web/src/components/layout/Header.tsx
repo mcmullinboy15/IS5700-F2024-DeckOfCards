@@ -33,11 +33,6 @@ export default function Header() {
     }
   }, [user]);
 
-  function handleLogin() {
-    // TODO: direct to login page
-    setProfile(user);
-  }
-
   function handleLogout() {
     // TODO: redirect to login and clear user from Auth provider
     setProfile(null);
