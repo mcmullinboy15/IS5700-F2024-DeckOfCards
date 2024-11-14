@@ -1,4 +1,3 @@
-import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Container,
@@ -11,11 +10,7 @@ import {
   TableBody,
 } from "@mui/material";
 
-interface LobbyParams {
-  gameType: string;
-}
-
-const Lobby: React.FC<LobbyParams> = () => {
+const Lobby = () => {
   const { gameType } = useParams();
 
   const navigate = useNavigate();
@@ -43,7 +38,12 @@ const Lobby: React.FC<LobbyParams> = () => {
           </TableBody>
         </Table>
       </div>
-      <Button onClick={handleStartGameClick} variant="contained" color="primary" style={{ marginTop: "20px" }}>
+      <Button
+        onClick={handleStartGameClick}
+        variant="contained"
+        color="primary"
+        style={{ marginTop: "20px" }}
+      >
         Start a Game
       </Button>
     </Container>
