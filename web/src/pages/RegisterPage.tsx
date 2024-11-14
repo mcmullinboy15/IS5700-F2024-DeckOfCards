@@ -1,7 +1,7 @@
 import { FormProvider } from "../context/FormProvider";
-import { TextInput } from "../common/TextInput";
-import { SelectInput } from "../common/SelectInput";
-import { SubmitButton } from "../common/SubmitButton";
+import { TextInput } from "../components/common/TextInput";
+import { SelectInput } from "../components/common/SelectInput";
+import { SubmitButton } from "../components/common/SubmitButton";
 import { useState } from "react";
 import { validatePassword } from "firebase/auth";
 import { auth } from "../firebase/config";
