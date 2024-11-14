@@ -20,7 +20,7 @@ const useMQTT = <T,>(topic: string): UseMQTT<T> => {
       mqttClient.subscribe(`IS5700/USU/McMullin/${topic}`);
     });
 
-    mqttClient.on("message", (topic, message) => {
+    mqttClient.on("message", (_, message) => {
       let parsedMessage: T;
       const messageString = message.toString();
       if (typeof messageString === "string") {

@@ -46,7 +46,7 @@ const ChatComponent = () => {
       });
     });
 
-    mqttClient.on("message", (topic, payload) => {
+    mqttClient.on("message", (_, payload) => {
       try {
         const message = JSON.parse(payload.toString());
         setMessages((prev) => [...prev, message]);
