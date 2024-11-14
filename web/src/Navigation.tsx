@@ -14,7 +14,7 @@ import { useState } from "react";
 const Navigation: React.FC = () => {
   const drawerWidth = 300;
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   // const handleDrawerOpen = () => {
   //   setOpen(true);
