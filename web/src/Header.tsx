@@ -26,7 +26,11 @@ export default function Header() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Deck of Cards Project
           </Typography>
-          <Button color="inherit">Login</Button>
+
+          <Button color="inherit" component={Link} to="/login">
+            Login
+          </Button>
+
           <Link to="/register">
             <Button color="inherit">Register</Button>
           </Link>
