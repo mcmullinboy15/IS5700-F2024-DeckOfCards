@@ -4,6 +4,7 @@ import ChatComponent from "../ChatComponent";
 import { ProfileWrapper } from "../../pages/Profile";
 import Lobby from "../../pages/Lobby";
 import StartGame from "../../pages/StartGame";
+import GameRoom from "../../pages/GameRoom";
 import Login from "../../pages/Login";
 import { RegisterPage } from "../../pages/RegisterPage";
 
@@ -17,6 +18,8 @@ export const RouterProvider = () => {
       <Route path="/profile/:userId" element={<ProfileWrapper />} />
       <Route path="/lobby/:gameType" element={<Lobby />} />
       <Route path="start-game/:gameType" element={<StartGame />} />
+      <Route path='/game' element={<GameRoom /> } />
+
     </Routes>
   );
 };

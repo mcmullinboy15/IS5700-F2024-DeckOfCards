@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from "react-router-dom";
 import { TextField, Typography, Button, Box } from "@mui/material";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 interface Player {
   id: string;
@@ -19,15 +19,16 @@ const StartGame: React.FC = () => {
   const [gameName, setGameName] = useState("");
   const [gameDesc, setGameDesc] = useState("");
   // @ts-ignore
-  const [user, setUser] = useState('user');
+  const [user, setUser] = useState("user");
   const [players, setPlayers] = useState<Player[]>([]);
 
+  const navigate = useNavigate();
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     const newPlayer: Player = {
       id: uuidv4(),
-      name: user
+      name: user,
     };
 
     setPlayers((prevPlayers) => [...prevPlayers, newPlayer]);
@@ -36,13 +37,14 @@ const StartGame: React.FC = () => {
       name: gameName,
       desc: gameDesc,
       players: [...players, newPlayer],
-      gameType: gameType || ""
+      gameType: gameType || "",
     };
     console.log("GAME NAME: ", newGame.name);
     console.log("GAME DESC: ", newGame.desc);
-    console.log('PLAYERS: ', newGame.players);
-    console.log('GAME TYPE: ', newGame.gameType);
+    console.log("PLAYERS: ", newGame.players);
+    console.log("GAME TYPE: ", newGame.gameType);
 
+    navigate("/game", { state: { game: newGame } });
   };
 
   const handleGameNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +54,6 @@ const StartGame: React.FC = () => {
   const handleGameDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGameDesc(event.target.value);
   };
-
 
   return (
     <Box sx={{ maxWidth: 400, margin: "auto", padding: 2 }}>
