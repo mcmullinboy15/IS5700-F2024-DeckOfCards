@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { TextField, Typography, Button, Box } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
+import { AuthContext } from "../context/AuthContext";
 
 interface Player {
   id: string;
-  name: string;
+  displayName: string;
 }
 interface newGame {
   name: string;
@@ -19,7 +20,7 @@ const StartGame: React.FC = () => {
   const [gameName, setGameName] = useState("");
   const [gameDesc, setGameDesc] = useState("");
   // @ts-ignore
-  const [user, setUser] = useState("user");
+  const { user } = useContext(AuthContext) || {};
   const [players, setPlayers] = useState<Player[]>([]);
 
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const StartGame: React.FC = () => {
 
     const newPlayer: Player = {
       id: uuidv4(),
-      name: user,
+      displayName: user?.displayName || user?.email || "anonymous",
     };
 
     setPlayers((prevPlayers) => [...prevPlayers, newPlayer]);
@@ -44,7 +45,7 @@ const StartGame: React.FC = () => {
     console.log("PLAYERS: ", newGame.players);
     console.log("GAME TYPE: ", newGame.gameType);
 
-    navigate("/game", { state: { game: newGame } });
+    navigate(`/game/${newGame.gameType}`, { state: { game: newGame } });
   };
 
   const handleGameNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {

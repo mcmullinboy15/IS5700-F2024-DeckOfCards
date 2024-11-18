@@ -4,7 +4,7 @@ import ChatComponent from "../components/ChatComponent";
 
 const GameRoom: React.FC = () => {
   const location = useLocation();
-  const { newGame: game } = location.state || {};
+  const { game } = location.state || {};
 
   return (
     <div className="h-screen">
@@ -13,7 +13,7 @@ const GameRoom: React.FC = () => {
         <div>
           Players:{" "}
           {game?.players.map((player: any) => (
-            <div key={player.id}>{player.name}</div>
+            <div key={player.id}>{player.displayName}</div>
           ))}
         </div>
         <div>Game Type: {game?.gameType}</div>

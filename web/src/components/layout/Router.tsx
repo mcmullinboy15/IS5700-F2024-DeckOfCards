@@ -18,7 +18,7 @@ export const RouterProvider = () => {
       <Route path="/profile/:userId" element={<ProfileWrapper />} />
       <Route path="/lobby/:gameType" element={<Lobby />} />
       <Route path="start-game/:gameType" element={<StartGame />} />
-      <Route path='/game' element={<GameRoom /> } />
+      <Route path='/game/:gameType' element={<GameRoom /> } />
 
     </Routes>
   );
