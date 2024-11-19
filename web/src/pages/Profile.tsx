@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { User } from "firebase/auth";
+import { LoadingSpinner } from "../components/common/LoadingSpinner";
 
 export function ProfileWrapper() {
   const { userId } = useParams();
@@ -36,7 +37,7 @@ export function Profile({ user }: { user: Partial<User> }) {
   }, [user]);
 
   if (!profile) {
-    return <div>Loading...</div>; // TODO: insert loading modal
+    return <LoadingSpinner/>;
   }
 
   if (profile) {
