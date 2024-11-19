@@ -1,4 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useFirestore } from "../firebase/db.ts";
+
 import {
   Container,
   Typography,
@@ -11,12 +13,14 @@ import {
 } from "@mui/material";
 
 const Lobby = () => {
+
+  //logic to retrieve games of the selected game type
   const { gameType } = useParams();
 
   const navigate = useNavigate();
 
-  const handleStartGameClick = () => {
-    navigate(`/start-game/${gameType}`);
+  const handleCreateGameClick = () => {
+    navigate(`/create-game/${gameType}`);
   };
 
   return (
@@ -39,12 +43,12 @@ const Lobby = () => {
         </Table>
       </div>
       <Button
-        onClick={handleStartGameClick}
+        onClick={handleCreateGameClick}
         variant="contained"
         color="primary"
         style={{ marginTop: "20px" }}
       >
-        Start a Game
+        Create a Game
       </Button>
     </Container>
   );

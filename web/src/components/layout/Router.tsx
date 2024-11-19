@@ -3,7 +3,7 @@ import HomePage from "../../pages/HomePage";
 import ChatComponent from "../ChatComponent";
 import { ProfileWrapper } from "../../pages/Profile";
 import Lobby from "../../pages/Lobby";
-import StartGame from "../../pages/StartGame";
+import CreateGame from "../../pages/CreateGame";
 import GameRoom from "../../pages/GameRoom";
 import Login from "../../pages/Login";
 import { RegisterPage } from "../../pages/RegisterPage";
@@ -17,9 +17,8 @@ export const RouterProvider = () => {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/profile/:userId" element={<ProfileWrapper />} />
       <Route path="/lobby/:gameType" element={<Lobby />} />
-      <Route path="start-game/:gameType" element={<StartGame />} />
+      <Route path="create-game/:gameType" element={<CreateGame />} />
       <Route path='/game/:gameType' element={<GameRoom /> } />
-
     </Routes>
   );
 };

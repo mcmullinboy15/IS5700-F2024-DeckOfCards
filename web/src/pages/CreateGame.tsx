@@ -15,7 +15,7 @@ interface newGame {
   gameType: string;
 }
 
-const StartGame: React.FC = () => {
+const CreateGame: React.FC = () => {
   const { gameType } = useParams<{ gameType: string }>();
   const [gameName, setGameName] = useState("");
   const [gameDesc, setGameDesc] = useState("");
@@ -94,4 +94,4 @@ const StartGame: React.FC = () => {
   );
 };
 
-export default StartGame;
+export default CreateGame;
