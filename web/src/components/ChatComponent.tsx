@@ -1,8 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import "./ChatComponent.css";
 import useMQTT, { MQTTMode } from "../hooks/mqtt";
-
-//in order to make this work, we need to but <ChatComponent /> in App.tsx
+import { AuthContext } from "../context/AuthContext";
 
 type Message = {
   text: string;
@@ -10,22 +9,26 @@ type Message = {
   timestamp: string;
 };
 
-type ChatComponentProps = {
-  chatName: string; // Name of the chat
-};
+interface ChatComponentProps {
+  chatName: string;
+}
 
 const ChatComponent: React.FC<ChatComponentProps> = ({ chatName }) => {
   const [newMessage, setNewMessage] = useState("");
   const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // Connect to MQTT broker
-  const { messages, sendMessage, error, connected } = useMQTT<Message>("chat", {
-    mode: MQTTMode.BUFFERED,
-    bufferSize: 5,
-  });
+  const authContext = useContext(AuthContext);
+  const user = authContext?.user || null;
 
-  // Auto-scroll to bottom when new messages arrive
+  const { messages, sendMessage, error, connected } = useMQTT<Message>(
+    chatName,
+    {
+      mode: MQTTMode.BUFFERED,
+      bufferSize: 5,
+    }
+  );
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -34,9 +37,11 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ chatName }) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    const messageData = {
+    const senderName = user?.displayName || user?.email || "Guest";
+
+    const messageData: Message = {
       text: newMessage,
-      sender: `User_${Math.random().toString(16).substring(2, 6)}`,
+      sender: senderName,
       timestamp: new Date().toISOString(),
     };
 
@@ -52,11 +57,10 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ chatName }) => {
     <div className={`chat-widget ${isMinimized ? "minimized" : ""}`}>
       <div className="chat-container">
         <div className="chat-header" onClick={toggleMinimize}>
-          <h3>{chatName}</h3>
-          <p className="chat-status">
-            {connected ? "Connected" : "Disconnected"}
-            {error && ` - Error: ${error.message}`}
-          </p>
+          <h3>
+            {chatName} {!connected && " (Disconnected)"}
+            {error && ` - ${error.message}`}
+          </h3>
           <button className="minimize-button">{isMinimized ? "+" : "-"}</button>
         </div>
 
