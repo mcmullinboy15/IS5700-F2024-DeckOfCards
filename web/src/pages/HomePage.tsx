@@ -49,12 +49,20 @@ const HomePage: React.FC = () => {
    };
 
    return (
+      <Container sx={{bgcolor:"#c9e8ff"}} fixed>
+     
       <div className="home-page">
-         <h1>Welcome! Let's Play Some Games!</h1>
-         <h2>Select a game to start:</h2>
+         <Box sx={{bgcolor:"#b7e1ff", display:"flex", justifyContent:"center", alignContent:"center", flexDirection:"row", }}>
+         <Typography variant="h2">Welcome! Let's Play Some Games!</Typography>
+         </Box>
+
+         <Box sx={{bgcolor:"#c9e8ff", display:"flex", justifyContent:"center", alignContent:"center", flexDirection:"row", }}>
+         <Typography variant="h4">Select a game to start:</Typography>
+         </Box>
          <div className="game-list">
             {games.map((game) => (
                <div key={game.id}>
+                  <Box sx={{bgcolor:"#dbf0ff", mt:4, display:"flex", justifyContent:"center", alignContent:"center", flexDirection:"column", }}>
                   <GameCard game={game} onClickAction={handleClickAction} />
                   <Button
                      variant="text"
@@ -64,6 +72,7 @@ const HomePage: React.FC = () => {
                   >
                      Learn More
                   </Button>
+                  </Box>
                </div>
             ))}
          </div>
@@ -81,7 +90,9 @@ const HomePage: React.FC = () => {
                <Button onClick={() => setSelectedGame(null)}>Close</Button>
             </DialogActions>
          </Dialog>
+      
       </div>
+      </Container>
    );
 };
 
