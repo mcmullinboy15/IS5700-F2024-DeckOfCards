@@ -40,6 +40,9 @@ const StartGame: React.FC = () => {
       players: [...players, newPlayer],
       gameType: gameType || "",
     };
+
+    //insert game into database
+
     console.log("GAME NAME: ", newGame.name);
     console.log("GAME DESC: ", newGame.desc);
     console.log("PLAYERS: ", newGame.players);

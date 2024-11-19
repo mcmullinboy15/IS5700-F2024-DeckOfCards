@@ -18,7 +18,6 @@ const GameRoom: React.FC = () => {
         </div>
         <div>Game Type: {game?.gameType}</div>
       </div>
-
       <div className="flex items-center h-[100%] bg-gray-800 text-white">
         <div className="mx-auto">Table Animation Component Here...</div>
         <div className="absolute bottom-0 left-0 right-0 flex justify-center space-x-[2%] p-4 h-[12%]">
