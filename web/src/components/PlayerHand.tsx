@@ -7,9 +7,10 @@ interface PlayerHandProps {
   busted: boolean;
   bet: number;
   cards: JSX.Element[];
+  name: String;
 }
 
-export default function PlayerHand({ busted, bet, cards }: PlayerHandProps) {
+export default function PlayerHand({ name, busted, bet, cards }: PlayerHandProps) {
   return (
     <>
       {/* PLAYER HAND */}
@@ -26,6 +27,9 @@ export default function PlayerHand({ busted, bet, cards }: PlayerHandProps) {
             BUSTED
           </Typography>
         ) : null}
+        <Typography variant="h5">
+            {name}
+          </Typography>
         <MuiCard
           sx={{
             width: "auto",

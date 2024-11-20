@@ -3,13 +3,19 @@ import PlayerHand from "./PlayerHand";
 import MuiCard from "@mui/material/Card";
 
 export default function BlackJackTable({}) {
+  const cards1 = [
+    <MuiCard sx={{ height: 150, width: 90 }}>Card 1</MuiCard>,
+    <MuiCard sx={{ height: 150, width: 90 }}>Card 2</MuiCard>,
+  ];
+  const cards2 = [
+    <MuiCard sx={{ height: 150, width: 90 }}>Card 3</MuiCard>,
+    <MuiCard sx={{ height: 150, width: 90 }}>Card 4</MuiCard>,
+  ];
+  const cards3 = [
+    <MuiCard sx={{ height: 150, width: 90 }}>Card 5</MuiCard>,
+    <MuiCard sx={{ height: 150, width: 90 }}>Card 6</MuiCard>,
+  ];
 
-  const cards1 = [<MuiCard sx={{ height: 150, width: 90 }}>Card 1</MuiCard>,
-  <MuiCard sx={{ height: 150, width: 90 }}>Card 2</MuiCard>]
-  const cards2 = [<MuiCard sx={{ height: 150, width: 90 }}>Card 3</MuiCard>,
-    <MuiCard sx={{ height: 150, width: 90 }}>Card 4</MuiCard>]
-    const cards3 = [<MuiCard sx={{ height: 150, width: 90 }}>Card 5</MuiCard>,
-      <MuiCard sx={{ height: 150, width: 90 }}>Card 6</MuiCard>]
   return (
     <>
       <Box
@@ -36,12 +42,12 @@ export default function BlackJackTable({}) {
             alignContent: "center",
             justifyContent: "center",
             padding: 2,
-            gap:2,
+            gap: 2,
           }}
         >
-          <PlayerHand busted={true} bet={40} cards={cards1}/>
-          <PlayerHand busted={false} bet={20} cards={cards2}/>
-          <PlayerHand busted={false} bet={30} cards={cards3} />
+          <PlayerHand name="Name1" busted={true} bet={40} cards={cards1} />
+          <PlayerHand name="Name2" busted={false} bet={20} cards={cards2} />
+          <PlayerHand name="Name3" busted={false} bet={30} cards={cards3} />
         </Box>
       </Box>
     </>
