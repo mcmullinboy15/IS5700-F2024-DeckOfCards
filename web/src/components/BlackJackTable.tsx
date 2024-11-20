@@ -9,7 +9,7 @@ interface Player {
   name: string;
   bet: number;
   cards: JSX.Element[];
-  total?: number;
+  total: number;
   busted: boolean;
   actionOn: boolean;
 }
@@ -98,7 +98,7 @@ export default function BlackJackTable({actionOnDealer = false, players}: BlackJ
           }}
         >
           {players.map((p) => (
-            <PlayerHand name={p.name} busted={p.busted} bet={p.bet} cards={p.cards} actionOn={p.actionOn} />
+            <PlayerHand name={p.name} busted={p.busted} bet={p.bet} cards={p.cards} actionOn={p.actionOn} total={p.total}/>
           ))}
         
           
