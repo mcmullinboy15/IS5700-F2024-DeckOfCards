@@ -1,12 +1,18 @@
 import { Button } from "@mui/material";
 import ChatComponent from "../components/ChatComponent";
 
-const GameRoom: React.FC = () => {
+import { ReactNode } from "react";
+
+interface GameRoomProps {
+    children: ReactNode;
+}
+
+const GameRoom: React.FC<GameRoomProps> = ({children}) => {
     return (
         <div className="h-screen">
             <div className="flex items-center h-[100%] bg-gray-800 text-white">
                 <div className="mx-auto">
-                    Table Animation Component Here...
+                    {children}
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 flex justify-center space-x-[2%] p-4 h-[12%]">
                     <Button 

@@ -6,6 +6,8 @@ import Lobby from "../../pages/Lobby";
 import StartGame from "../../pages/StartGame";
 import Login from "../../pages/Login";
 import { RegisterPage } from "../../pages/RegisterPage";
+import GameRoom from "../../pages/GameRoom";
+import BlackJackTable from "../BlackJackTable";
 
 export const RouterProvider = () => {
   return (
@@ -17,6 +19,7 @@ export const RouterProvider = () => {
       <Route path="/profile/:userId" element={<ProfileWrapper />} />
       <Route path="/lobby/:gameType" element={<Lobby />} />
       <Route path="start-game/:gameType" element={<StartGame />} />
+      <Route path="/gameroom" element={<GameRoom><BlackJackTable/></GameRoom>} />
     </Routes>
   );
 };
