@@ -16,11 +16,17 @@ interface GameStateObject {
  * @returns Functions and state to manage game state objects.
  */
 const useGameState = <T extends GameStateObject>(initialObject: T, bufferSize: number = 5) => {
-	const { messages, connected, error } = useMQTT<T>(`GameState-${initialObject.id}`, {
+	const { messages, sendMessage, connected, error } = useMQTT<T>(`GameState-${initialObject.id}`, {
 		mode: MQTTMode.BUFFERED,
 		bufferSize: bufferSize,
 	});
-	const [object, setObject] = useState<T>(initialObject);
+
+	const [object, setObjectState] = useState<T>(initialObject);
+
+	const setObject = (newObject: T) => {
+		setObjectState(newObject);
+		sendMessage(newObject);
+	};
 
 	useEffect(() => {
 		if (messages && messages.length > 0) {
@@ -41,6 +47,7 @@ const useGameState = <T extends GameStateObject>(initialObject: T, bufferSize: n
 
 	return {
 		object,
+		setObject,
 		connected,
 		error,
 	};
