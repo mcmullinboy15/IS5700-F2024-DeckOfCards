@@ -20,6 +20,7 @@ interface newGame {
 }
 
 const CreateGame: React.FC = () => {
+  const { addDocument } = useFirestore();
   const { gameType } = useParams<{ gameType: string }>();
   const [gameName, setGameName] = useState("");
   const [gameDesc, setGameDesc] = useState("");
@@ -28,7 +29,7 @@ const CreateGame: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([]);
 
   const navigate = useNavigate();
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const newPlayer: Player = {
@@ -49,15 +50,14 @@ const CreateGame: React.FC = () => {
     };
 
     //insert game into database
+    try {
+      const gameId = await addDocument("games", newGame);
+      console.log('game added successfully with id: ', gameId);
+      navigate(`/game/${newGame.gameType}/${newGame.id}`, { state: { game: newGame } });
+    } catch (error) {
+      console.error('error adding game: ', error);
+    }
 
-    console.log('GAME ID: ', newGame.id);
-    console.log('TIMESTAMP: ', newGame.timestamp);
-    console.log("GAME NAME: ", newGame.name);
-    console.log("GAME DESC: ", newGame.desc);
-    console.log("PLAYERS: ", newGame.players);
-    console.log("GAME TYPE: ", newGame.gameType);
-
-    navigate(`/game/${newGame.gameType}/${newGame.id}`, { state: { game: newGame } });
   };
 
   const handleGameNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
