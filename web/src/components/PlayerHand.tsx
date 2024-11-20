@@ -8,9 +8,11 @@ interface PlayerHandProps {
   bet: number;
   cards: JSX.Element[];
   name: String;
+  actionOn: boolean;
 }
 
-export default function PlayerHand({ name, busted, bet, cards }: PlayerHandProps) {
+export default function PlayerHand({ name, busted, bet, cards, actionOn }: PlayerHandProps) {
+    const bgColor = (actionOn ? "#363636" : null);
   return (
     <>
       {/* PLAYER HAND */}
@@ -20,6 +22,8 @@ export default function PlayerHand({ name, busted, bet, cards }: PlayerHandProps
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          bgcolor: bgColor,
+          padding: 2
         }}
       >
         {busted ? (
