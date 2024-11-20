@@ -39,6 +39,7 @@ export default function BlackJackTable({}) {
             bottom: 0,
             display: "flex",
             flexDirection: "row",
+            flexWrap:"wrap",
             alignContent: "center",
             justifyContent: "center",
             padding: 2,
@@ -48,6 +49,7 @@ export default function BlackJackTable({}) {
           <PlayerHand name="Name1" busted={true} bet={40} cards={cards1} />
           <PlayerHand name="Name2" busted={false} bet={20} cards={cards2} />
           <PlayerHand name="Name3" busted={false} bet={30} cards={cards3} />
+          
         </Box>
       </Box>
     </>
