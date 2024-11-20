@@ -9,9 +9,10 @@ interface PlayerHandProps {
   cards: JSX.Element[];
   name: String;
   actionOn: boolean;
+  total: number;
 }
 
-export default function PlayerHand({ name, busted, bet, cards, actionOn }: PlayerHandProps) {
+export default function PlayerHand({ name, busted, bet, cards, actionOn, total }: PlayerHandProps) {
     const bgColor = (actionOn ? "#363636" : null);
   return (
     <>
@@ -30,7 +31,9 @@ export default function PlayerHand({ name, busted, bet, cards, actionOn }: Playe
           <Typography variant="h5" sx={{ color: "red" }}>
             BUSTED
           </Typography>
-        ) : null}
+        ) : <Typography variant="h5">
+        {total}
+      </Typography>}
         <Typography variant="h5">
             {name}
           </Typography>
