@@ -1,7 +1,13 @@
 import { Button } from "@mui/material";
 import ChatComponent from "../components/ChatComponent";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const GameRoom: React.FC = () => {
+  const authContext = useContext(AuthContext);
+
+  const user = authContext?.user;
+
   return (
     <div className="h-screen">
       <div className="flex items-center h-[100%] bg-gray-800 text-white">
@@ -54,7 +60,13 @@ const GameRoom: React.FC = () => {
           </Button>
         </div>
       </div>
-      <ChatComponent chatName="Game Room Chat" />
+      {user ? (
+        <ChatComponent chatName="Game Room Chat" />
+      ) : (
+        <div className="text-center mt-4 text-red-500">
+          Please sign in to access the chat.
+        </div>
+      )}
     </div>
   );
 };
