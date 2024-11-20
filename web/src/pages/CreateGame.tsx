@@ -3,14 +3,18 @@ import { useParams, useNavigate } from "react-router-dom";
 import { TextField, Typography, Button, Box } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import { AuthContext } from "../context/AuthContext";
+import { useFirestore } from "../firebase/db";
 
 interface Player {
   id: string;
   displayName: string;
 }
 interface newGame {
+  id: string;
+  timestamp: number;
   name: string;
   desc: string;
+  creatorId: string;
   players: Player[];
   gameType: string;
 }
@@ -35,20 +39,25 @@ const CreateGame: React.FC = () => {
     setPlayers((prevPlayers) => [...prevPlayers, newPlayer]);
 
     const newGame: newGame = {
+      id: uuidv4(),
+      timestamp: Date.now(),
       name: gameName,
       desc: gameDesc,
+      creatorId: uuidv4(),
       players: [...players, newPlayer],
       gameType: gameType || "",
     };
 
     //insert game into database
 
+    console.log('GAME ID: ', newGame.id);
+    console.log('TIMESTAMP: ', newGame.timestamp);
     console.log("GAME NAME: ", newGame.name);
     console.log("GAME DESC: ", newGame.desc);
     console.log("PLAYERS: ", newGame.players);
     console.log("GAME TYPE: ", newGame.gameType);
 
-    navigate(`/game/${newGame.gameType}`, { state: { game: newGame } });
+    navigate(`/game/${newGame.gameType}/${newGame.id}`, { state: { game: newGame } });
   };
 
   const handleGameNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
