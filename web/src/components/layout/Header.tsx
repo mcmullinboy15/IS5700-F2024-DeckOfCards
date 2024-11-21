@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -9,42 +9,32 @@ import {
   Button,
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
-import { User } from "firebase/auth";
+
+import { AuthContext } from "../../context/AuthContext";
+import { logout } from "../../firebase/auth";
+
 import Navigation from "./Navigation";
 
 export default function Header() {
-  // const user = useContext(AuthContext);  // this will be the real call
-
-  const user: Partial<User> = {
-    // dummy data
-    uid: "1",
-    email: "bob@gmail.com",
-    displayName: "Bobby McGee",
-  };
-
   const navigator = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const { user } = useContext(AuthContext) || {};
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
 
-  const [profile, setProfile] = useState<User | null>(null); // TODO: set profile state to something from Auth Provider (not just a string)
+  async function handleLogout() {
+    if (!confirm("Are you sure you want to logout?")) {
+      return;
+    }
 
-  // useEffect(() => {
-  //   if (user && !profile) {
-  //     setProfile(user);
-  //   }
-  // }, [user]);
-
-  function handleLogout() {
-    // TODO: redirect to login and clear user from Auth provider
-    setProfile(null);
+    await logout();
+    navigator("/login");
   }
 
   function handleProfile() {
-    // TODO: direct to profile page
-
     navigator(`/profile/${user?.uid}`);
   }
 
@@ -66,13 +56,10 @@ export default function Header() {
             Deck of Cards Project
           </Typography>
 
-          <Button onClick={() => navigator("/")} color="inherit">
-            Home
-          </Button>
-          {profile ? (
+          {user ? (
             <>
               <Button onClick={handleProfile} color="inherit">
-                {profile.displayName}
+                {user.displayName}
               </Button>
               {/* TODO: Get username from Auth provider */}
               <Button onClick={handleLogout} color="inherit">
@@ -92,6 +79,7 @@ export default function Header() {
           )}
         </Toolbar>
       </AppBar>
+
       <Navigation open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </Box>
   );

@@ -20,11 +20,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/auth.user
       setUser(user);
-      console.log('User is signed in:', user);
+      console.log("User is signed in:", user);
     } else {
       // User is signed out
       setUser(null);
-      console.log('User is signed out');  
+      console.log("User is signed out");
     }
   });
 
