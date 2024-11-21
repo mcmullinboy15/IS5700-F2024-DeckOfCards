@@ -46,7 +46,8 @@ const Lobby: React.FC = () => {
 
         // Filter games by gameType
         const filteredGames = allGames.filter(
-          (game: any) => game.gameType === gameType
+          (game: any) =>
+            game.gameType?.toLowerCase() === gameType?.toLowerCase()
         );
         setGames(filteredGames);
       } catch (err) {
