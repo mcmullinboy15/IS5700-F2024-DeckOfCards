@@ -1,15 +1,36 @@
 import { Button } from "@mui/material";
+import { useLocation } from "react-router-dom";
+import useGameState from "../hooks/useGameState";
 import ChatComponent from "../components/ChatComponent";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const GameRoom: React.FC = () => {
+<<<<<<< HEAD
   const authContext = useContext(AuthContext);
 
   const user = authContext?.user;
+=======
+  const location = useLocation();
+  const { initialGame } = location.state || {};
+  console.log("INITIAL GAME: ", initialGame);
+  const gameState = useGameState(initialGame);
+  const game = gameState.object;
+  console.log("GAME: ", game);
+>>>>>>> main
 
   return (
     <div className="h-screen">
+      <div className="mx-auto">
+        <h1>{game?.name}</h1>
+        <div>
+          Players:{" "}
+          {game?.players.map((player: any) => (
+            <div key={player.id}>{player.displayName}</div>
+          ))}
+        </div>
+        <div>Game Type: {game?.gameType}</div>
+      </div>
       <div className="flex items-center h-[100%] bg-gray-800 text-white">
         <div className="mx-auto">Table Animation Component Here...</div>
         <div className="absolute bottom-0 left-0 right-0 flex justify-center space-x-[2%] p-4 h-[12%]">
@@ -60,6 +81,7 @@ const GameRoom: React.FC = () => {
           </Button>
         </div>
       </div>
+<<<<<<< HEAD
       {user ? (
         <ChatComponent chatName="Game Room Chat" />
       ) : (
@@ -67,6 +89,9 @@ const GameRoom: React.FC = () => {
           Please sign in to access the chat.
         </div>
       )}
+=======
+      <ChatComponent />
+>>>>>>> main
     </div>
   );
 };
