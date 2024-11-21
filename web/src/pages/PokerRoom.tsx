@@ -5,11 +5,10 @@ import {
   GameState,
   Player,
   Card,
-  Pot,
 } from "../game-logic/poker-logic";
 
 // utility to join class names
-const cn = (...classes: string[]) => classes.filter(Boolean).join(" ");
+const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(" ");
 
 // badge component
 interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
