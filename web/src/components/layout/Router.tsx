@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import HomePage from "../../pages/HomePage";
-import ChatComponent from "../ChatComponent";
 import { ProfileWrapper } from "../../pages/Profile";
 import Lobby from "../../pages/Lobby";
 import CreateGame from "../../pages/CreateGame";
@@ -12,7 +11,6 @@ export const RouterProvider = () => {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="chat" element={<ChatComponent />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/profile/:userId" element={<ProfileWrapper />} />
