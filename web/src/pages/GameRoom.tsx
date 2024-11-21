@@ -10,11 +10,9 @@ const GameRoom: React.FC = () => {
   const user = authContext?.user;
 
   const location = useLocation();
-  const { initialGame } = location.state || {};
-  console.log("INITIAL GAME: ", initialGame);
+  const { game: initialGame } = location.state || {};
   const gameState = useGameState(initialGame);
   const game = gameState.object;
-  console.log("GAME: ", game);
 
   return (
     <div className="h-screen">
@@ -28,6 +26,7 @@ const GameRoom: React.FC = () => {
         </div>
         <div>Game Type: {game?.gameType}</div>
       </div>
+
       <div className="flex items-center h-[100%] bg-gray-800 text-white">
         <div className="mx-auto">Table Animation Component Here...</div>
         <div className="absolute bottom-0 left-0 right-0 flex justify-center space-x-[2%] p-4 h-[12%]">

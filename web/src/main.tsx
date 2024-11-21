@@ -9,7 +9,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
       <App />
+      <ChatComponent chatName="Global Chat" />
     </AuthProvider>
-    <ChatComponent chatName="Global Chat" />
   </StrictMode>
 );
