@@ -203,14 +203,16 @@ function handleAction(
   switch (action) {
     case "fold":
       currentPlayer.folded = true;
+      currentPlayer.acted = true;
       break;
 
     case "check":
       if (newGame.currentBet > currentPlayer.bet)
         throw new Error("can't check");
+      currentPlayer.acted = true;
       break;
 
-    case "call":
+    case "call": {
       const callAmount = Math.min(
         newGame.currentBet - currentPlayer.bet,
         currentPlayer.chips
@@ -220,15 +222,19 @@ function handleAction(
       currentPlayer.bet += callAmount;
       currentPlayer.totalBet += callAmount;
       addToPot(newGame, callAmount);
+      currentPlayer.acted = true;
       break;
+    }
 
-    case "raise":
+    case "raise": {
       if (amount < newGame.minRaise) throw new Error("raise too small");
 
-      let raiseAmount = newGame.currentBet + amount - currentPlayer.bet;
+      const raiseAmount = Math.min(
+        newGame.currentBet + amount - currentPlayer.bet,
+        currentPlayer.chips
+      );
 
-      if (raiseAmount > currentPlayer.chips) {
-        raiseAmount = currentPlayer.chips;
+      if (raiseAmount === currentPlayer.chips) {
         currentPlayer.allIn = true;
       }
 
@@ -246,10 +252,11 @@ function handleAction(
           p.acted = false;
         }
       });
+      currentPlayer.acted = true;
       break;
+    }
   }
 
-  currentPlayer.acted = true;
   return advanceGame(newGame);
 }
 
