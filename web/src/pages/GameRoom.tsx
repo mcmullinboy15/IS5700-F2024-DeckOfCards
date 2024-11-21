@@ -58,7 +58,10 @@ const GameRoom: React.FC = () => {
             </div>
             <ChatComponent />
         </div>
-    );
-}
+      </div>
+      <ChatComponent chatName="Game Room Chat" />
+    </div>
+  );
+};
 
 export default GameRoom;
