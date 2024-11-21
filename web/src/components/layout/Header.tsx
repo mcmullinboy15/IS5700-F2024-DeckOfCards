@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import { User } from "firebase/auth";
+import Navigation from "./Navigation";
 
 export default function Header() {
   // const user = useContext(AuthContext);  // this will be the real call
@@ -22,6 +23,11 @@ export default function Header() {
   };
 
   const navigator = useNavigate();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+  };
 
   const [profile, setProfile] = useState<User | null>(null); // TODO: set profile state to something from Auth Provider (not just a string)
 
@@ -52,6 +58,7 @@ export default function Header() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            onClick={handleDrawerToggle}
           >
             <Menu />
           </IconButton>
@@ -85,6 +92,7 @@ export default function Header() {
           )}
         </Toolbar>
       </AppBar>
+      <Navigation open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </Box>
   );
 }

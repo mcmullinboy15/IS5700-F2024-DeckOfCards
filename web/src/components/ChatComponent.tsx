@@ -121,6 +121,7 @@ const ChatComponent = () => {
     Record<string, Message[]>
   >({});
   const [newMessage, setNewMessage] = useState("");
+  // @ts-ignore
   const [unreadCount, setUnreadCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showReactionPicker, setShowReactionPicker] = useState<string | null>(
@@ -130,7 +131,7 @@ const ChatComponent = () => {
   const [currentChannel, setCurrentChannel] = useState<Channel>(
     DEFAULT_CHANNELS[0]
   );
-  const [mentionUsers, setMentionUsers] = useState<string[]>([]);
+  // const [mentionUsers, setMentionUsers] = useState<string[]>([]);
   const [unreadByChannel, setUnreadByChannel] = useState<
     Record<string, number>
   >({});
@@ -439,13 +440,13 @@ const ChatComponent = () => {
     setShowReactionPicker(messageId);
   };
 
-  const handleMention = (message: string) => {
-    const mentions = message.match(/@(\w+)/g);
-    if (mentions) {
-      setMentionUsers(mentions.map((m) => m.substring(1)));
-      // Trigger notification for mentioned users
-    }
-  };
+  // const handleMention = (message: string) => {
+  //   const mentions = message.match(/@(\w+)/g);
+  //   if (mentions) {
+  //     setMentionUsers(mentions.map((m) => m.substring(1)));
+  //     // Trigger notification for mentioned users
+  //   }
+  // };
 
   // Clear unread count when switching channels
   const handleChannelSwitch = (channel: Channel) => {
@@ -468,19 +469,19 @@ const ChatComponent = () => {
     });
   };
 
-  const handleGameJoin = (gameId: string) => {
-    const gameChannel = DEFAULT_CHANNELS.find((c) => c.gameId === gameId);
-    if (gameChannel) {
-      handleSubscription(gameChannel.id, true);
-    }
-  };
+  // const handleGameJoin = (gameId: string) => {
+  //   const gameChannel = DEFAULT_CHANNELS.find((c) => c.gameId === gameId);
+  //   if (gameChannel) {
+  //     handleSubscription(gameChannel.id, true);
+  //   }
+  // };
 
-  const handleGameLeave = (gameId: string) => {
-    const gameChannel = DEFAULT_CHANNELS.find((c) => c.gameId === gameId);
-    if (gameChannel) {
-      handleSubscription(gameChannel.id, false);
-    }
-  };
+  // const handleGameLeave = (gameId: string) => {
+  //   const gameChannel = DEFAULT_CHANNELS.find((c) => c.gameId === gameId);
+  //   if (gameChannel) {
+  //     handleSubscription(gameChannel.id, false);
+  //   }
+  // };
 
   const updateSettings = (
     category: keyof ChatSettings,
@@ -551,7 +552,7 @@ const ChatComponent = () => {
 
     // Create message handler for notifications
     const handleNewMessages = () => {
-      DEFAULT_CHANNELS.forEach((channel, index) => {
+      DEFAULT_CHANNELS.forEach((_, index) => {
         const channelMessages = channelSubscriptions[index].messages;
 
         // Get last message if there are any messages
@@ -592,7 +593,7 @@ const ChatComponent = () => {
     };
 
     // Watch for changes in messages
-    channelSubscriptions.forEach((sub, index) => {
+    channelSubscriptions.forEach((sub, _) => {
       if (sub.messages) {
         handleNewMessages();
       }
