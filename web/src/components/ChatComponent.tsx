@@ -120,8 +120,8 @@ type ChatComponentProps = {
   chatName: string;
 };
 
+// @ts-ignore
 const ChatComponent = ({ chatName }: ChatComponentProps) => {
-  console.log("ChatComponent chatName:", chatName);
   const [isMinimized, setIsMinimized] = useState(false);
   const [size, setSize] = useState({ width: 800, height: 500 });
   const [isResizing, setIsResizing] = useState(false);

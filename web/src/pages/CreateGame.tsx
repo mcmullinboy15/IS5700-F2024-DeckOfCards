@@ -52,12 +52,13 @@ const CreateGame: React.FC = () => {
     //insert game into database
     try {
       const gameId = await addDocument("games", newGame);
-      console.log('game added successfully with id: ', gameId);
-      navigate(`/game/${newGame.gameType}/${newGame.id}`, { state: { initialGame: newGame } });
+      console.log("game added successfully with id: ", gameId);
+      navigate(`/game/${newGame.gameType}/${newGame.id}`, {
+        state: { game: newGame },
+      });
     } catch (error) {
-      console.error('error adding game: ', error);
+      console.error("error adding game: ", error);
     }
-
   };
 
   const handleGameNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
