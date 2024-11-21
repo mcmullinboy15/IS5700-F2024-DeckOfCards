@@ -116,7 +116,12 @@ interface ChatSettings {
   };
 }
 
-const ChatComponent = () => {
+type ChatComponentProps = {
+  chatName: string;
+};
+
+const ChatComponent = ({ chatName }: ChatComponentProps) => {
+  console.log("ChatComponent chatName:", chatName);
   const [isMinimized, setIsMinimized] = useState(false);
   const [size, setSize] = useState({ width: 800, height: 500 });
   const [isResizing, setIsResizing] = useState(false);
@@ -415,7 +420,7 @@ const ChatComponent = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    const senderName = "TODO:Guest"; //user?.displayName || user?.email || "Guest";
+    const senderName = "TODO:Guest"; // user?.displayName || user?.email || "Guest";
 
     const messageData: Message = {
       id: crypto.randomUUID(),
