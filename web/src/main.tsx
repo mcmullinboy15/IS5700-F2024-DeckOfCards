@@ -3,11 +3,13 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import AuthProvider from "./context/AuthContext.tsx";
+import ChatComponent from "./components/ChatComponent.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
       <App />
     </AuthProvider>
+    <ChatComponent chatName="Global Chat" />
   </StrictMode>
 );
