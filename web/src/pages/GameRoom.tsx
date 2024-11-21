@@ -13,7 +13,6 @@ const GameRoom: React.FC = () => {
   const { game: initialGame } = location.state || {};
   const gameState = useGameState(initialGame);
   const game = gameState.object;
-  console.log('game', game);
 
   return (
     <div className="h-screen">
