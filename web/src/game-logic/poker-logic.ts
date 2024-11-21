@@ -472,4 +472,4 @@ function compareHands(hand1: HandRank, hand2: HandRank): number {
 }
 
 export { initGame, handleAction };
-export type { GameState, Player, Card };
+export type { GameState, Player, Card, Pot };
