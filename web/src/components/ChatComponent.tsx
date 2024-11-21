@@ -2,10 +2,7 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import "./ChatComponent.css";
 import useMQTT, { MQTTMode } from "../hooks/useMqtt";
-<<<<<<< HEAD
-=======
 // @ts-ignore
->>>>>>> main
 import { AuthContext } from "../context/AuthContext";
 
 type Reaction = {
