@@ -6,6 +6,7 @@ import CreateGame from "../../pages/CreateGame";
 import GameRoom from "../../pages/GameRoom";
 import Login from "../../pages/Login";
 import { RegisterPage } from "../../pages/RegisterPage";
+import PokerRoom from "../../pages/PokerRoom";
 import LiveGamesPage from "../../pages/LiveGamesPage";
 
 export const RouterProvider = () => {
@@ -16,6 +17,7 @@ export const RouterProvider = () => {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/profile/:userId" element={<ProfileWrapper />} />
       <Route path="/lobby/:gameType" element={<Lobby />} />
+      <Route path="/poker-room/:roomId" element={<PokerRoom />} />
       <Route path="/lobby/:gameType/:lobbyId/spectate" element={<Lobby />} />
       <Route path="/livegames" element={<LiveGamesPage />} />
       <Route path="create-game/:gameType" element={<CreateGame />} />
