@@ -1,47 +1,62 @@
-import React, { useState } from "react";
-import { useParams } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { TextField, Typography, Button, Box } from "@mui/material";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
+import { AuthContext } from "../context/AuthContext";
+import { useFirestore } from "../firebase/db";
 
 interface Player {
   id: string;
-  name: string;
+  displayName: string;
 }
 interface newGame {
+  id: string;
+  timestamp: number;
   name: string;
   desc: string;
+  creatorId: string;
   players: Player[];
   gameType: string;
 }
 
-const StartGame: React.FC = () => {
+const CreateGame: React.FC = () => {
+  const { addDocument } = useFirestore();
   const { gameType } = useParams<{ gameType: string }>();
   const [gameName, setGameName] = useState("");
   const [gameDesc, setGameDesc] = useState("");
   // @ts-ignore
-  const [user, setUser] = useState('user');
+  const { user } = useContext(AuthContext) || {};
   const [players, setPlayers] = useState<Player[]>([]);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const newPlayer: Player = {
       id: uuidv4(),
-      name: user
+      displayName: user?.displayName || user?.email || "anonymous",
     };
 
     setPlayers((prevPlayers) => [...prevPlayers, newPlayer]);
 
     const newGame: newGame = {
+      id: uuidv4(),
+      timestamp: Date.now(),
       name: gameName,
       desc: gameDesc,
+      creatorId: uuidv4(),
       players: [...players, newPlayer],
-      gameType: gameType || ""
+      gameType: gameType || "",
     };
-    console.log("GAME NAME: ", newGame.name);
-    console.log("GAME DESC: ", newGame.desc);
-    console.log('PLAYERS: ', newGame.players);
-    console.log('GAME TYPE: ', newGame.gameType);
+
+    //insert game into database
+    try {
+      const gameId = await addDocument("games", newGame);
+      console.log('game added successfully with id: ', gameId);
+      navigate(`/game/${newGame.gameType}/${newGame.id}`, { state: { initialGame: newGame } });
+    } catch (error) {
+      console.error('error adding game: ', error);
+    }
 
   };
 
@@ -52,7 +67,6 @@ const StartGame: React.FC = () => {
   const handleGameDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGameDesc(event.target.value);
   };
-
 
   return (
     <Box sx={{ maxWidth: 400, margin: "auto", padding: 2 }}>
@@ -89,4 +103,4 @@ const StartGame: React.FC = () => {
   );
 };
 
-export default StartGame;
+export default CreateGame;
