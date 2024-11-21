@@ -1,6 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+// @ts-ignore
+import { useState, useRef, useEffect, useContext } from "react";
 import "./ChatComponent.css";
 import useMQTT, { MQTTMode } from "../hooks/useMqtt";
+// @ts-ignore
+import { AuthContext } from "../context/AuthContext";
 
 type Reaction = {
   type: "like" | "heart" | "laugh" | "wow" | "sad" | "angry";
@@ -412,10 +415,12 @@ const ChatComponent = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
+    const senderName = "TODO:Guest"; //user?.displayName || user?.email || "Guest";
+
     const messageData: Message = {
       id: crypto.randomUUID(),
       text: newMessage,
-      sender: `User_${Math.random().toString(16).substring(2, 6)}`,
+      sender: senderName,
       timestamp: new Date().toISOString(),
       channelId: currentChannel.id,
       reactions: {},
@@ -439,14 +444,6 @@ const ChatComponent = () => {
     event.preventDefault();
     setShowReactionPicker(messageId);
   };
-
-  // const handleMention = (message: string) => {
-  //   const mentions = message.match(/@(\w+)/g);
-  //   if (mentions) {
-  //     setMentionUsers(mentions.map((m) => m.substring(1)));
-  //     // Trigger notification for mentioned users
-  //   }
-  // };
 
   // Clear unread count when switching channels
   const handleChannelSwitch = (channel: Channel) => {
