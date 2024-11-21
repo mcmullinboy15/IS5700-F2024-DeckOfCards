@@ -1,10 +1,9 @@
+// @ts-ignore
 import { useState, useRef, useEffect, useContext } from "react";
 import "./ChatComponent.css";
 import useMQTT, { MQTTMode } from "../hooks/useMqtt";
-<<<<<<< HEAD
-import useMQTT, { MQTTMode } from "../hooks/mqtt";
+// @ts-ignore
 import { AuthContext } from "../context/AuthContext";
-=======
 
 type Reaction = {
   type: "like" | "heart" | "laugh" | "wow" | "sad" | "angry";
@@ -21,7 +20,6 @@ type Channel = {
   participants?: string[];
   isSubscribed?: boolean;
 };
->>>>>>> main
 
 type Message = {
   text: string;
@@ -34,11 +32,6 @@ type Message = {
   replyTo?: string;
 };
 
-<<<<<<< HEAD
-interface ChatComponentProps {
-  chatName: string;
-}
-=======
 const AVAILABLE_REACTIONS: Reaction["type"][] = [
   "like",
   "heart",
@@ -47,7 +40,6 @@ const AVAILABLE_REACTIONS: Reaction["type"][] = [
   "sad",
   "angry",
 ];
->>>>>>> main
 
 // Add default channels
 const DEFAULT_CHANNELS: Channel[] = [
@@ -126,27 +118,13 @@ interface ChatSettings {
 
 const ChatComponent = () => {
   const [isMinimized, setIsMinimized] = useState(false);
-<<<<<<< HEAD
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
-  const authContext = useContext(AuthContext);
-  const user = authContext?.user || null;
-
-  const { messages, sendMessage, error, connected } = useMQTT<Message>(
-    chatName,
-    {
-      mode: MQTTMode.BUFFERED,
-      bufferSize: 5,
-    }
-  );
-
-=======
   const [size, setSize] = useState({ width: 800, height: 500 });
   const [isResizing, setIsResizing] = useState(false);
   const [messagesByChannel, setMessagesByChannel] = useState<
     Record<string, Message[]>
   >({});
   const [newMessage, setNewMessage] = useState("");
+  // @ts-ignore
   const [unreadCount, setUnreadCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showReactionPicker, setShowReactionPicker] = useState<string | null>(
@@ -156,7 +134,7 @@ const ChatComponent = () => {
   const [currentChannel, setCurrentChannel] = useState<Channel>(
     DEFAULT_CHANNELS[0]
   );
-  const [mentionUsers, setMentionUsers] = useState<string[]>([]);
+  // const [mentionUsers, setMentionUsers] = useState<string[]>([]);
   const [unreadByChannel, setUnreadByChannel] = useState<
     Record<string, number>
   >({});
@@ -417,7 +395,6 @@ const ChatComponent = () => {
   };
 
   // Auto-scroll to bottom when new messages arrive
->>>>>>> main
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [currentMessages]);
@@ -438,14 +415,10 @@ const ChatComponent = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-<<<<<<< HEAD
-    const senderName = user?.displayName || user?.email || "Guest";
+    const senderName = "TODO:Guest"; //user?.displayName || user?.email || "Guest";
 
     const messageData: Message = {
-=======
-    const messageData: Message = {
       id: crypto.randomUUID(),
->>>>>>> main
       text: newMessage,
       sender: senderName,
       timestamp: new Date().toISOString(),
@@ -472,27 +445,6 @@ const ChatComponent = () => {
     setShowReactionPicker(messageId);
   };
 
-<<<<<<< HEAD
-  return (
-    <div className={`chat-widget ${isMinimized ? "minimized" : ""}`}>
-      <div className="chat-container">
-        <div className="chat-header" onClick={toggleMinimize}>
-          <h3>
-            {chatName} {!connected && " (Disconnected)"}
-            {error && ` - ${error.message}`}
-          </h3>
-          <button className="minimize-button">{isMinimized ? "+" : "-"}</button>
-        </div>
-=======
-  const handleMention = (message: string) => {
-    const mentions = message.match(/@(\w+)/g);
-    if (mentions) {
-      setMentionUsers(mentions.map((m) => m.substring(1)));
-      // Trigger notification for mentioned users
-    }
-  };
->>>>>>> main
-
   // Clear unread count when switching channels
   const handleChannelSwitch = (channel: Channel) => {
     setCurrentChannel(channel);
@@ -514,19 +466,19 @@ const ChatComponent = () => {
     });
   };
 
-  const handleGameJoin = (gameId: string) => {
-    const gameChannel = DEFAULT_CHANNELS.find((c) => c.gameId === gameId);
-    if (gameChannel) {
-      handleSubscription(gameChannel.id, true);
-    }
-  };
+  // const handleGameJoin = (gameId: string) => {
+  //   const gameChannel = DEFAULT_CHANNELS.find((c) => c.gameId === gameId);
+  //   if (gameChannel) {
+  //     handleSubscription(gameChannel.id, true);
+  //   }
+  // };
 
-  const handleGameLeave = (gameId: string) => {
-    const gameChannel = DEFAULT_CHANNELS.find((c) => c.gameId === gameId);
-    if (gameChannel) {
-      handleSubscription(gameChannel.id, false);
-    }
-  };
+  // const handleGameLeave = (gameId: string) => {
+  //   const gameChannel = DEFAULT_CHANNELS.find((c) => c.gameId === gameId);
+  //   if (gameChannel) {
+  //     handleSubscription(gameChannel.id, false);
+  //   }
+  // };
 
   const updateSettings = (
     category: keyof ChatSettings,
@@ -597,7 +549,7 @@ const ChatComponent = () => {
 
     // Create message handler for notifications
     const handleNewMessages = () => {
-      DEFAULT_CHANNELS.forEach((channel, index) => {
+      DEFAULT_CHANNELS.forEach((_, index) => {
         const channelMessages = channelSubscriptions[index].messages;
 
         // Get last message if there are any messages
@@ -638,7 +590,7 @@ const ChatComponent = () => {
     };
 
     // Watch for changes in messages
-    channelSubscriptions.forEach((sub, index) => {
+    channelSubscriptions.forEach((sub, _) => {
       if (sub.messages) {
         handleNewMessages();
       }
