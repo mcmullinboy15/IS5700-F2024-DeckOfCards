@@ -1,11 +1,16 @@
 import { Button } from "@mui/material";
 import { useLocation } from "react-router-dom";
+import useGameState from '../hooks/useGameState';
 import ChatComponent from "../components/ChatComponent";
 
 const GameRoom: React.FC = () => {
   const location = useLocation();
-  const { game } = location.state || {};
-
+  const { initialGame } = location.state || {};
+  console.log('INITIAL GAME: ', initialGame)
+  const gameState = useGameState(initialGame);
+  const game = gameState.object;
+  console.log('GAME: ', game);
+  
   return (
     <div className="h-screen">
       <div className="mx-auto">

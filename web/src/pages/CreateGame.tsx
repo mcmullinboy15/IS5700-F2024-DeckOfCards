@@ -53,7 +53,7 @@ const CreateGame: React.FC = () => {
     try {
       const gameId = await addDocument("games", newGame);
       console.log('game added successfully with id: ', gameId);
-      navigate(`/game/${newGame.gameType}/${newGame.id}`, { state: { game: newGame } });
+      navigate(`/game/${newGame.gameType}/${newGame.id}`, { state: { initialGame: newGame } });
     } catch (error) {
       console.error('error adding game: ', error);
     }
