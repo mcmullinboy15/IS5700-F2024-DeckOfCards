@@ -76,6 +76,10 @@ const GameRoom: React.FC = () => {
           >
             Split
           </Button>
+          {/* <GameRulesModal gameTitle="Poker" rulesData={pokerRules}/> */}
+          {/* I didn't write out the gamerules, but all the game information is defined on the homepage so we could use that */}
+          {/* <CopyGameLink gameId="game_123" isActive={true} /> */}
+          {/* This would come from game state/status */}
         </div>
       </div>
       {user ? (
