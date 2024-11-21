@@ -12,7 +12,7 @@ interface PlayerHandProps {
   total: number;
 }
 
-export default function PlayerHand({ name, busted, bet, cards, actionOn, total }: PlayerHandProps) {
+export default function PlayerHand({ name, busted, bet, cards, actionOn=false, total }: PlayerHandProps) {
     const bgColor = (actionOn ? "#363636" : null);
   return (
     <>
