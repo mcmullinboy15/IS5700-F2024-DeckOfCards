@@ -6,18 +6,15 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const GameRoom: React.FC = () => {
-<<<<<<< HEAD
   const authContext = useContext(AuthContext);
-
   const user = authContext?.user;
-=======
+
   const location = useLocation();
   const { initialGame } = location.state || {};
   console.log("INITIAL GAME: ", initialGame);
   const gameState = useGameState(initialGame);
   const game = gameState.object;
   console.log("GAME: ", game);
->>>>>>> main
 
   return (
     <div className="h-screen">
@@ -81,7 +78,6 @@ const GameRoom: React.FC = () => {
           </Button>
         </div>
       </div>
-<<<<<<< HEAD
       {user ? (
         <ChatComponent chatName="Game Room Chat" />
       ) : (
@@ -89,9 +85,6 @@ const GameRoom: React.FC = () => {
           Please sign in to access the chat.
         </div>
       )}
-=======
-      <ChatComponent />
->>>>>>> main
     </div>
   );
 };

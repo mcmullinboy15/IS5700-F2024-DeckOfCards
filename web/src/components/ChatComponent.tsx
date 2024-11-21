@@ -1,10 +1,7 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import "./ChatComponent.css";
-<<<<<<< HEAD
-import useMQTT, { MQTTMode } from "../hooks/mqtt";
-import { AuthContext } from "../context/AuthContext";
-=======
 import useMQTT, { MQTTMode } from "../hooks/useMqtt";
+import { AuthContext } from "../context/AuthContext";
 
 type Reaction = {
   type: "like" | "heart" | "laugh" | "wow" | "sad" | "angry";
@@ -21,7 +18,6 @@ type Channel = {
   participants?: string[];
   isSubscribed?: boolean;
 };
->>>>>>> main
 
 type Message = {
   text: string;
@@ -34,11 +30,6 @@ type Message = {
   replyTo?: string;
 };
 
-<<<<<<< HEAD
-interface ChatComponentProps {
-  chatName: string;
-}
-=======
 const AVAILABLE_REACTIONS: Reaction["type"][] = [
   "like",
   "heart",
@@ -47,7 +38,6 @@ const AVAILABLE_REACTIONS: Reaction["type"][] = [
   "sad",
   "angry",
 ];
->>>>>>> main
 
 // Add default channels
 const DEFAULT_CHANNELS: Channel[] = [
@@ -124,23 +114,13 @@ interface ChatSettings {
   };
 }
 
-const ChatComponent = () => {
+type ChatComponentProps = {
+  chatName: string;
+};
+
+const ChatComponent = ({ chatName }: ChatComponentProps) => {
+  console.log("ChatComponent chatName:", chatName);
   const [isMinimized, setIsMinimized] = useState(false);
-<<<<<<< HEAD
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
-  const authContext = useContext(AuthContext);
-  const user = authContext?.user || null;
-
-  const { messages, sendMessage, error, connected } = useMQTT<Message>(
-    chatName,
-    {
-      mode: MQTTMode.BUFFERED,
-      bufferSize: 5,
-    }
-  );
-
-=======
   const [size, setSize] = useState({ width: 800, height: 500 });
   const [isResizing, setIsResizing] = useState(false);
   const [messagesByChannel, setMessagesByChannel] = useState<
@@ -418,7 +398,6 @@ const ChatComponent = () => {
   };
 
   // Auto-scroll to bottom when new messages arrive
->>>>>>> main
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [currentMessages]);
@@ -439,14 +418,10 @@ const ChatComponent = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-<<<<<<< HEAD
-    const senderName = user?.displayName || user?.email || "Guest";
+    const senderName = "TODO:Guest"; // user?.displayName || user?.email || "Guest";
 
     const messageData: Message = {
-=======
-    const messageData: Message = {
       id: crypto.randomUUID(),
->>>>>>> main
       text: newMessage,
       sender: senderName,
       timestamp: new Date().toISOString(),
@@ -472,27 +447,6 @@ const ChatComponent = () => {
     event.preventDefault();
     setShowReactionPicker(messageId);
   };
-
-<<<<<<< HEAD
-  return (
-    <div className={`chat-widget ${isMinimized ? "minimized" : ""}`}>
-      <div className="chat-container">
-        <div className="chat-header" onClick={toggleMinimize}>
-          <h3>
-            {chatName} {!connected && " (Disconnected)"}
-            {error && ` - ${error.message}`}
-          </h3>
-          <button className="minimize-button">{isMinimized ? "+" : "-"}</button>
-        </div>
-=======
-  // const handleMention = (message: string) => {
-  //   const mentions = message.match(/@(\w+)/g);
-  //   if (mentions) {
-  //     setMentionUsers(mentions.map((m) => m.substring(1)));
-  //     // Trigger notification for mentioned users
-  //   }
-  // };
->>>>>>> main
 
   // Clear unread count when switching channels
   const handleChannelSwitch = (channel: Channel) => {
