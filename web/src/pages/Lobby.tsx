@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useFirestore } from "../firebase/db";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   Container,
@@ -12,10 +13,16 @@ import {
   Button,
   TableBody,
 } from "@mui/material";
+import { AuthContext } from "../context/AuthContext";
+
+interface Player {
+  id: string;
+  displayName: string;
+}
 
 const Lobby: React.FC = () => {
   //logic to retrieve games of the selected game type
-  const { getCollection } = useFirestore();
+  const { getCollection, updateDocument } = useFirestore();
   const { gameType } = useParams();
 
   const [games, setGames] = useState<any[]>([]);
@@ -23,6 +30,8 @@ const Lobby: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+
+  const { user } = useContext(AuthContext) || {};
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -51,6 +60,21 @@ const Lobby: React.FC = () => {
 
   const handleCreateGameClick = () => {
     navigate(`/create-game/${gameType}`);
+  };
+
+  const handleJoinGame = (game: any) => {
+    const newPlayer: Player = {
+      id: uuidv4(),
+      displayName: user?.displayName || user?.email || "anonymous",
+    };
+
+    updateDocument("games", game.id, {
+      players: [...game.players, newPlayer],
+    });
+
+    navigate(`/game/${game.gameType}/${game.id}`, {
+      state: { game },
+    });
   };
 
   return (
@@ -97,11 +121,7 @@ const Lobby: React.FC = () => {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() =>
-                        navigate(`/game/${game.gameType}/${game.id}`, {
-                          state: { game },
-                        })
-                      }
+                      onClick={() => handleJoinGame(game)}
                     >
                       Join Game
                     </Button>

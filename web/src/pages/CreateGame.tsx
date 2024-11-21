@@ -9,6 +9,7 @@ interface Player {
   id: string;
   displayName: string;
 }
+
 interface newGame {
   id: string;
   timestamp: number;
