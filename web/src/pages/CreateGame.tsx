@@ -25,7 +25,6 @@ const CreateGame: React.FC = () => {
   const { gameType } = useParams<{ gameType: string }>();
   const [gameName, setGameName] = useState("");
   const [gameDesc, setGameDesc] = useState("");
-  // @ts-ignore
   const { user } = useContext(AuthContext) || {};
   const [players, setPlayers] = useState<Player[]>([]);
 
@@ -40,8 +39,7 @@ const CreateGame: React.FC = () => {
 
     setPlayers((prevPlayers) => [...prevPlayers, newPlayer]);
 
-    const newGame: newGame = {
-      id: uuidv4(),
+    const newGame: Omit<newGame, "id"> = {
       timestamp: Date.now(),
       name: gameName,
       desc: gameDesc,
@@ -49,12 +47,13 @@ const CreateGame: React.FC = () => {
       players: [...players, newPlayer],
       gameType: gameType || "",
     };
+    console.log("newGame", newGame);
 
     //insert game into database
     try {
       const gameId = await addDocument("games", newGame);
       console.log("game added successfully with id: ", gameId);
-      navigate(`/game/${newGame.gameType}/${newGame.id}`, {
+      navigate(`/game/${newGame.gameType}/${gameId}`, {
         state: { game: newGame },
       });
     } catch (error) {

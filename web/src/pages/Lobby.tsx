@@ -43,6 +43,7 @@ const Lobby: React.FC = () => {
           id: doc.id,
           ...doc.data(),
         }));
+
         // Filter games by gameType
         const filteredGames = allGames.filter(
           (game: any) => game.gameType === gameType
@@ -63,18 +64,29 @@ const Lobby: React.FC = () => {
   };
 
   const handleJoinGame = (game: any) => {
+    console.log("game1", game);
     const newPlayer: Player = {
       id: uuidv4(),
       displayName: user?.displayName || user?.email || "anonymous",
     };
+    console.log("newPlayer", newPlayer);
 
-    updateDocument("games", game.id, {
-      players: [...game.players, newPlayer],
-    });
+    const players = [...game.players, newPlayer];
+
+    updateDocument("games", game.id, { players })
+      .then(() => console.log("Player added to game"))
+      .catch((err) => console.error("Error adding player to game:", err));
+    console.log("game.players", game.players);
 
     navigate(`/game/${game.gameType}/${game.id}`, {
-      state: { game },
+      state: {
+        game: {
+          ...game,
+          players,
+        },
+      },
     });
+    console.log("game2", game);
   };
 
   return (
