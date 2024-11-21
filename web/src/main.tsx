@@ -10,7 +10,6 @@ createRoot(document.getElementById("root")!).render(
     <AuthProvider>
       <App />
     </AuthProvider>
-    <ChatComponent /> 
-     {/* chatName="Global Chat" /> */}
+    <ChatComponent chatName="Global Chat" />
   </StrictMode>
 );
