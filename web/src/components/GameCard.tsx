@@ -1,4 +1,10 @@
 import { useNavigate } from 'react-router-dom';
+import Box from "@mui/material/Box";
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+
+
+
 
 interface GameCardProps {
   game: {
@@ -16,21 +22,33 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClickAction }) => {
   }
 
   return (
+    <Box sx={{bgcolor:"#a5d9ff", display:"flex", flexDirection:"row", justifyContent:"center"}}>
     <div className="game-card">
-      <h2>{game.name}</h2>
+      <Box sx={{display:"flex", justifyContent:"center"}}>
+      <Typography  variant='h5'>{game.name}</Typography>
+
+      </Box>
+        <Box gap={2}>
       <div className="game-actions">
         {game.actions.map((action) => (
-          <button
+          
+          <Button
+          variant='outlined'
             key={action}
             onClick={() => onClickAction(game.name, action)}
             className="game-action-button"
-          >
+            >
             {action}
-          </button>
+          </Button>
         ))}
       </div>
-      <button onClick={() => handleNavToLobby(game.name)}>Enter Lobby</button>
+      <Box sx={{display:"flex", justifyContent:"center"}}>
+
+      <Button variant='contained' onClick={() => handleNavToLobby(game.name)}>Enter Lobby</Button>
+      </Box>
+        </Box>
     </div>
+    </Box>
   );
 };
 
