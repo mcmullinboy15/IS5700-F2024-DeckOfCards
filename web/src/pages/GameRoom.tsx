@@ -9,14 +9,14 @@ const GameRoom: React.FC = () => {
                     Table Animation Component Here...
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 flex justify-center space-x-[2%] p-4 h-[12%]">
-                    <Button 
+                <Button 
                         variant="outlined" 
                         sx={{ 
                             fontSize: "25px", 
-                            borderColor: "#FFD700", 
+                            borderColor: "red", 
                             borderWidth: "2px", 
                             color: 'red', 
-                            backgroundColor: 'rgba(0, 0, 0, 0.2)', 
+                            backgroundColor: 'rgba(255, 99, 71, 0.4)', 
                             borderRadius: '20px', 
                             width: '20%', 
                             maxWidth: '150px' 
@@ -28,10 +28,10 @@ const GameRoom: React.FC = () => {
                         variant="outlined" 
                         sx={{ 
                             fontSize: "25px", 
-                            borderColor: "#FFD700", 
+                            borderColor: "gold", 
                             borderWidth: "2px", 
-                            color: 'yellow', 
-                            backgroundColor: 'rgba(0, 0, 0, 0.2)', 
+                            color: 'gold', 
+                            backgroundColor: 'rgba(255, 215, 0, 0.4)', 
                             borderRadius: '20px', 
                             width: '20%', 
                             maxWidth: '150px' 
@@ -43,10 +43,10 @@ const GameRoom: React.FC = () => {
                         variant="outlined" 
                         sx={{ 
                             fontSize: "25px", 
-                            borderColor: "#FFD700", 
+                            borderColor: "white", 
                             borderWidth: "2px", 
                             color: 'white', 
-                            backgroundColor: 'rgba(0, 0, 0, 0.2)', 
+                            backgroundColor: 'rgba(225, 225, 225, 0.3)', 
                             borderRadius: '20px', 
                             width: '20%', 
                             maxWidth: '150px' 
@@ -58,7 +58,10 @@ const GameRoom: React.FC = () => {
             </div>
             <ChatComponent />
         </div>
-    );
-}
+      </div>
+      <ChatComponent chatName="Game Room Chat" />
+    </div>
+  );
+};
 
 export default GameRoom;
