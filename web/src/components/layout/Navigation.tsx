@@ -1,99 +1,3 @@
-// import {
-//   Drawer,
-//   IconButton,
-//   Divider,
-//   List,
-//   ListItem,
-//   ListItemIcon,
-//   ListItemButton,
-//   ListItemText,
-// } from "@mui/material";
-// import { ChevronLeft, Inbox, Mail } from "@mui/icons-material";
-// import { useState } from "react";
-// import { Link, useLocation } from "react-router-dom";
-
-// const Navigation: React.FC = () => {
-//   const drawerWidth = 300;
-
-//   const [open, setOpen] = useState(false);
-
-//   const handleDrawerClose = () => {
-//     setOpen(false);
-//   };
-
-//   const location = useLocation();
-
-//   const isActive = (path: string): boolean => {
-//     return location.pathname === path;
-//   };
-
-//   return (
-//     <Drawer
-//       sx={{
-//         width: drawerWidth,
-//         flexShrink: 0,
-//         "& .MuiDrawer-paper": {
-//           width: drawerWidth,
-//           boxSizing: "border-box",
-//         },
-//       }}
-//       variant="persistent"
-//       anchor="left"
-//       open={open}
-//     >
-//       <div>
-//         <IconButton onClick={handleDrawerClose}>
-//           <ChevronLeft />
-//         </IconButton>
-//       </div>
-//       <Divider />
-//       <List>
-//         {["/", "/game", "/chat"].map((path, index) => (
-//           <ListItem key={path} disablePadding>
-//             <ListItemButton
-//               component={Link}
-//               to={path}
-//               sx={{
-//                 backgroundColor: isActive(path)
-//                   ? "rgba(0, 0, 0, 0.08)" // Highlight active item
-//                   : "transparent",
-//               }}
-//             >
-//               <ListItemIcon>
-//                 {index % 2 === 0 ? <Inbox /> : <Mail />}
-//               </ListItemIcon>
-//               <ListItemText primary={path.slice(1) || "Home"} />
-//             </ListItemButton>
-//           </ListItem>
-//         ))}
-//       </List>
-//       <Divider />
-//       <List>
-//         {["/all-mail", "/trash", "/spam"].map((path, index) => (
-//           <ListItem key={path} disablePadding>
-//             <ListItemButton
-//               component={Link}
-//               to={path}
-//               sx={{
-//                 backgroundColor: isActive(path)
-//                   ? "rgba(0, 0, 0, 0.08)" // Highlight active item
-//                   : "transparent",
-//               }}
-//             >
-//               <ListItemIcon>
-//                 {index % 2 === 0 ? <Inbox /> : <Mail />}
-//               </ListItemIcon>
-//               <ListItemText primary={path.slice(1)} />
-//             </ListItemButton>
-//           </ListItem>
-//         ))}
-//       </List>
-//     </Drawer>
-//   );
-// };
-
-
-
 import {
   Drawer,
   List,
@@ -105,11 +9,38 @@ import {
 } from "@mui/material";
 import { Home, Casino, Person, Dashboard } from "@mui/icons-material";
 import { Link, useLocation } from "react-router-dom";
+import { styled } from "@mui/material/styles";
 
 interface NavigationProps {
   open: boolean;
   onClose: () => void;
 }
+
+const StyledDrawer = styled(Drawer)({
+  "& .MuiDrawer-paper": {
+    width: 250,
+    backgroundColor: "#111928",
+    color: "white",
+    borderRight: "1px solid rgba(255, 255, 255, 0.1)",
+  },
+});
+
+const StyledListItemButton = styled(ListItemButton)({
+  "&:hover": {
+    backgroundColor: "rgba(139, 92, 246, 0.1)",
+  },
+  "&.active": {
+    backgroundColor: "rgba(139, 92, 246, 0.2)",
+  },
+  margin: "4px 8px",
+  borderRadius: "8px",
+  transition: "all 0.2s ease",
+});
+
+const StyledListItemIcon = styled(ListItemIcon)({
+  color: "rgba(255, 255, 255, 0.7)",
+  minWidth: "40px",
+});
 
 const Navigation: React.FC<NavigationProps> = ({ open, onClose }) => {
   const location = useLocation();
@@ -128,17 +59,8 @@ const Navigation: React.FC<NavigationProps> = ({ open, onClose }) => {
   ];
 
   return (
-    <Drawer
-      anchor="left"
-      open={open}
-      onClose={onClose}
-      sx={{
-        "& .MuiDrawer-paper": {
-          width: 250,
-        },
-      }}
-    >
-      <Box onClick={onClose}>
+    <StyledDrawer anchor="left" open={open} onClose={onClose}>
+      <Box onClick={onClose} sx={{ pt: 2 }}>
         <List>
           {menuItems.map((item) => (
             <Link
@@ -147,23 +69,27 @@ const Navigation: React.FC<NavigationProps> = ({ open, onClose }) => {
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <ListItem disablePadding>
-                <ListItemButton
-                  sx={{
-                    backgroundColor: isCurrentPage(item.path)
-                      ? "rgba(0, 0, 0, 0.08)"
-                      : "transparent",
-                  }}
+                <StyledListItemButton
+                  className={isCurrentPage(item.path) ? "active" : ""}
                 >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.label} />
-                </ListItemButton>
+                  <StyledListItemIcon>{item.icon}</StyledListItemIcon>
+                  <ListItemText
+                    primary={item.label}
+                    sx={{
+                      "& .MuiListItemText-primary": {
+                        fontSize: "0.95rem",
+                        fontWeight: isCurrentPage(item.path) ? 600 : 400,
+                      },
+                    }}
+                  />
+                </StyledListItemButton>
               </ListItem>
             </Link>
           ))}
         </List>
       </Box>
-    </Drawer>
+    </StyledDrawer>
   );
 };
+
 export default Navigation;
-	
