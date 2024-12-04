@@ -14,6 +14,7 @@ interface GameState {
     | "playerTurn"
     | "dealerTurn"
     | "completed";
+  deckId: string | null;
 }
 
 interface UseBlackjackReturn {
@@ -57,6 +58,7 @@ export const useBlackjack = (): UseBlackjackReturn => {
     dealerScore: 0,
     gameEvents: [],
     gameStatus: "waiting",
+    deckId: null,
   });
 
   const startGame = async () => {
@@ -81,13 +83,14 @@ export const useBlackjack = (): UseBlackjackReturn => {
           .join(", ")}`,
       ],
       gameStatus: "playerTurn",
+      deckId: deck.deck_id,
     });
   };
 
   const playPlayerTurn = async () => {
-    if (state.gameStatus !== "playerTurn") return;
+    if (state.gameStatus !== "playerTurn" || !state.deckId) return;
 
-    const newCard = (await drawCard(state.playerHand[0].deck_id)).cards[0];
+    const newCard = (await drawCard(state.deckId, 1)).cards[0];
     const updatedHand = [...state.playerHand, newCard];
     const newScore = calculateHandValue(updatedHand);
 
@@ -111,13 +114,13 @@ export const useBlackjack = (): UseBlackjackReturn => {
   };
 
   const playDealerTurn = async () => {
-    if (state.gameStatus !== "dealerTurn") return;
+    if (state.gameStatus !== "dealerTurn" || !state.deckId) return;
 
     let dealerHand = [...state.dealerHand];
     let dealerScore = state.dealerScore;
 
     while (dealerScore < 17) {
-      const newCard = (await drawCard(state.dealerHand[0].deck_id)).cards[0];
+      const newCard = (await drawCard(state.deckId, 1)).cards[0];
       dealerHand.push(newCard);
       dealerScore = calculateHandValue(dealerHand);
 
@@ -162,6 +165,7 @@ export const useBlackjack = (): UseBlackjackReturn => {
       dealerScore: 0,
       gameEvents: [],
       gameStatus: "waiting",
+      deckId: null,
     });
   };
 
