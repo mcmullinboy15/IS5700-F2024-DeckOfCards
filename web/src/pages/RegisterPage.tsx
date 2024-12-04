@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Container,
@@ -6,38 +6,32 @@ import {
   Typography,
   TextField,
   Button,
-  Alert,
   Paper,
   MenuItem,
   Link,
 } from "@mui/material";
-import { register } from "../firebase/auth"; // Ensure this path is correct
+import { register } from "../firebase/auth";
 import { showToast } from "../components/CustomToast";
 import { validatePassword } from "firebase/auth";
 import { auth } from "../firebase/config";
 
-type RegisterUser = {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  access: string;
-  username: string;
-};
+type AccessLevel = "Player" | "Admin";
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
-  const [shake, setShake] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [access, setAccess] = useState("Player");
+
+  const [error, setError] = useState<string>("");
+  const [shake, setShake] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [access, setAccess] = useState<AccessLevel>("Player");
 
   // Email regex for validation
   const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (password !== confirmPassword) {
@@ -62,16 +56,27 @@ export const RegisterPage: React.FC = () => {
 
     // Proceed with registration
     register(email, password, username, access)
-      .then((user) => {
+      .then(() => {
         showToast("User registered successfully.", "success");
         setError("");
-        navigate("/login"); // Redirect to login after successful registration
+        setShake("");
+        navigate("/login");
       })
-      .catch((error) => {
+      .catch((error: { message: string }) => {
         const errorMessage = error.message || "Registration failed.";
         setError(errorMessage);
         setShake("shake");
       });
+  };
+
+  const handleChange =
+    (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setter(event.target.value);
+    };
+
+  const handleAccessChange = (event: ChangeEvent<{ value: unknown }>) => {
+    setAccess(event.target.value as AccessLevel);
   };
 
   return (
@@ -90,9 +95,9 @@ export const RegisterPage: React.FC = () => {
           </Typography>
 
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
+            <span className={`text-red-500 mx-auto ${shake} block`}>
               {error}
-            </Alert>
+            </span>
           )}
 
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -105,7 +110,7 @@ export const RegisterPage: React.FC = () => {
               name="email"
               autoComplete="email"
               autoFocus
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleChange(setEmail)}
               value={email}
             />
             <TextField
@@ -115,7 +120,7 @@ export const RegisterPage: React.FC = () => {
               id="username"
               label="Username"
               name="username"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleChange(setUsername)}
               value={username}
             />
             <TextField
@@ -127,7 +132,7 @@ export const RegisterPage: React.FC = () => {
               type="password"
               name="password"
               autoComplete="new-password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange(setPassword)}
               value={password}
             />
             <TextField
@@ -139,7 +144,7 @@ export const RegisterPage: React.FC = () => {
               type="password"
               name="confirmPassword"
               autoComplete="new-password"
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={handleChange(setConfirmPassword)}
               value={confirmPassword}
             />
             <TextField
@@ -148,7 +153,7 @@ export const RegisterPage: React.FC = () => {
               label="Select Access"
               name="access"
               value={access}
-              onChange={(e) => setAccess(e.target.value)}
+              onChange={handleAccessChange}
               sx={{ mt: 2 }}
             >
               <MenuItem value="Player">Player</MenuItem>
