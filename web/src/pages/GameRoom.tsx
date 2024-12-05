@@ -35,9 +35,9 @@ const GameRoom: React.FC = () => {
   // ========Example usage for the player information to be passed to this prop===========
 
   const tempplayers = [{name: "name1", bet:40, cards: cards1, total: 31, busted:false, actionOn:false},
-    {name: "name2", bet:10, cards: cards1, total:15, busted:false, actionOn:false},
-    {name: "name3", bet:50, cards: cards2, total:15, busted:false, actionOn:false},
-    {name: "name4", bet:15, cards: cards3, total:15, busted:false, actionOn:true}];
+    {name: "name2", bet:10, cards: cards1, total:15, busted:false},
+    {name: "name3", bet:50, cards: cards2, total:15, busted:false},
+    {name: "name4", bet:15, cards: cards3, total:15, busted:false}];
 
   return (
     <div className="h-screen">

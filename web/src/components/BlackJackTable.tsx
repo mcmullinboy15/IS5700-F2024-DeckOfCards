@@ -5,18 +5,18 @@ import { Typography } from "@mui/material";
 
 
 
-interface Player {
+interface BlackJackPlayer {
   name: string;
   bet: number;
   cards: JSX.Element[];
   total: number;
   busted: boolean;
-  actionOn: boolean;
+  actionOn?: boolean;
 }
 
 interface BlackJackTableProps {
   actionOnDealer?: boolean;
-  players: Player[];
+  players: BlackJackPlayer[];
 }
 
 export default function BlackJackTable({actionOnDealer = false, players}: BlackJackTableProps) {
@@ -97,9 +97,16 @@ export default function BlackJackTable({actionOnDealer = false, players}: BlackJ
             gap: 2,
           }}
         >
-          {players.map((p) => (
-            <PlayerHand name={p.name} busted={p.busted} bet={p.bet} cards={p.cards} actionOn={p.actionOn} total={p.total}/>
-          ))}
+            {players.map((p) => (
+            <PlayerHand 
+              name={p.name} 
+              busted={p.busted} 
+              bet={p.bet} 
+              cards={p.cards} 
+              actionOn={p.actionOn ?? false} 
+              total={p.total}
+            />
+            ))}
         
           
         </Box>
