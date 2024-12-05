@@ -21,22 +21,21 @@ interface Player {
 }
 
 const Lobby: React.FC = () => {
-  //logic to retrieve games of the selected game type
   const { getCollection, updateDocument } = useFirestore();
   const { gameType } = useParams();
 
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [archiving, setArchiving] = useState<string | null>(null);
 
   const navigate = useNavigate();
-
   const { user } = useContext(AuthContext) || {};
 
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        setLoading(true); // Indicate loading
+        setLoading(true);
         const querySnapshot = await getCollection("games");
 
         const allGames = querySnapshot.docs.map((doc) => ({
@@ -44,17 +43,17 @@ const Lobby: React.FC = () => {
           ...doc.data(),
         }));
 
-        // Filter games by gameType
         const filteredGames = allGames.filter(
           (game: any) =>
-            game.gameType?.toLowerCase() === gameType?.toLowerCase()
+            game.gameType?.toLowerCase() === gameType?.toLowerCase() &&
+            !game.archived //only show non-archived games
         );
         setGames(filteredGames);
       } catch (err) {
         console.error("Error fetching games:", err);
         setError("Failed to load games. Please try again later.");
       } finally {
-        setLoading(false); // End loading state
+        setLoading(false);
       }
     };
     fetchGames();
@@ -86,11 +85,41 @@ const Lobby: React.FC = () => {
     });
   };
 
+  const handleArchiveGame = async (gameId: string) => {
+    try {
+      setArchiving(gameId);
+      setError(null);
+
+      const updateData = {
+        archived: true,
+        archivedAt: new Date().toISOString(),
+        archivedBy: user?.displayName || user?.email || "anonymous",
+        status: 'archived'
+      };
+
+      await updateDocument("games", gameId, updateData);
+      
+      //remove the archived game from the local state
+      setGames(prevGames => prevGames.filter(game => game.id !== gameId));
+      
+    } catch (err) {
+      console.error("Error archiving game:", err);
+      setError("Failed to archive game. Please try again later.");
+    } finally {
+      setArchiving(null);
+    }
+  };
+
   return (
     <Container maxWidth="md">
       <Typography variant="h4" component="h1" gutterBottom>
         {gameType} Lobby
       </Typography>
+      {error && (
+        <Typography color="error" sx={{ mb: 2 }}>
+          {error}
+        </Typography>
+      )}
       <div className="live-game-table-container">
         <Table className="live-game-table">
           <TableHead>
@@ -108,12 +137,6 @@ const Lobby: React.FC = () => {
                   Loading games...
                 </TableCell>
               </TableRow>
-            ) : error ? (
-              <TableRow>
-                <TableCell colSpan={4} align="center" style={{ color: "red" }}>
-                  {error}
-                </TableCell>
-              </TableRow>
             ) : games.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} align="center">
@@ -127,13 +150,24 @@ const Lobby: React.FC = () => {
                   <TableCell align="center">{game.desc}</TableCell>
                   <TableCell align="center">{game.players.length}</TableCell>
                   <TableCell align="center">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleJoinGame(game)}
-                    >
-                      Join Game
-                    </Button>
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleJoinGame(game)}
+                        disabled={archiving === game.id}
+                      >
+                        Join Game
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => handleArchiveGame(game.id)}
+                        disabled={archiving === game.id}
+                      >
+                        {archiving === game.id ? 'Archiving...' : 'Archive Game'}
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
