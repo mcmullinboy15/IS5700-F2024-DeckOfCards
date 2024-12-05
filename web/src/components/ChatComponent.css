@@ -1119,6 +1119,7 @@
   display: flex;
   height: calc(100% - 50px); /* Adjust based on header height */
   position: relative;
+  overflow: auto;
 }
 
 .main-chat {
@@ -1220,4 +1221,21 @@
 
 .setting-item input[type="checkbox"]:checked::before {
   transform: translateX(20px);
+}
+
+@media (max-width: 768px) {
+
+  .chat-widget {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 80% !important;
+    height: 60% !important;
+  }
+
+  .sidebar {
+    width: 40%;
+    min-width: 133px;
+    max-width: 160px;
+}
 }
