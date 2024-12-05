@@ -11,17 +11,19 @@ import {
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 
-interface Game {
+interface GameInfo {
   id: number;
   name: string;
+  routeName: string;
   actions: string[];
   description: string;
 }
 
-const games: Game[] = [
+const games: GameInfo[] = [
   {
     id: 1,
     name: "Poker",
+    routeName: "poker",
     actions: ["Join", "Create", "Spectate", "Start"],
     description:
       "Texas Hold'em Poker is a variant of poker where players receive two hole cards and share five community cards. Make the best five-card hand to win!",
@@ -29,20 +31,23 @@ const games: Game[] = [
   {
     id: 2,
     name: "Blackjack",
+    routeName: "blackjack",
     actions: ["Join", "Create", "Spectate", "Start"],
     description:
       "Try to beat the dealer by getting as close to 21 as possible without going over. Face cards are worth 10, Aces can be 1 or 11.",
   },
   {
     id: 3,
-    name: "Insert Game Here",
+    name: "Roulette",
+    routeName: "roulette",
     actions: ["Join", "Create", "Spectate", "Start"],
-    description: "Insert description here.",
+    description:
+      "Roulette is a game of chance where players bet on which number or color the ball will land on. The dealer spins the wheel and drops the ball in the opposite direction. Good luck!",
   },
 ];
 
 const HomePage: React.FC = () => {
-  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+  const [selectedGame, setSelectedGame] = useState<GameInfo | null>(null);
 
   const handleClickAction = (gameName: string, action: string) => {
     console.log(`You selected "${action}" for ${gameName}`);

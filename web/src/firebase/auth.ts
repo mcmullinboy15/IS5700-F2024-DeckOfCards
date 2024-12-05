@@ -28,11 +28,18 @@ export const register = async (
   return user;
 };
 
-// @ts-ignore
 export const login = async (email: string, password: string) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error: any) {
     console.error("Error during sign in:", error);
+  }
+};
+
+export const logout = async () => {
+  try {
+    await auth.signOut();
+  } catch (error: any) {
+    console.error("Error during sign out:", error);
   }
 };
