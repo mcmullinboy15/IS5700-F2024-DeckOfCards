@@ -2,12 +2,12 @@ import { FormProvider } from "../context/FormProvider";
 import { TextInput } from "../components/common/TextInput";
 import { SelectInput } from "../components/common/SelectInput";
 import { SubmitButton } from "../components/common/SubmitButton";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { validatePassword } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { showToast } from "../components/CustomToast";
 import { useNavigate } from "react-router-dom";
-import { register } from "../firebase/auth";
+import { AuthContext } from "../context/AuthContext";
 import dns from "dns";
 
 type RegisterUser = {
@@ -20,12 +20,14 @@ type RegisterUser = {
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
+  const authContext = useContext(AuthContext);
 
   const [error, setError] = useState("");
   const [shake, setShake] = useState("");
 
   //regex provides basic level verification
   const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
   const handleSubmit = async (input: RegisterUser) => {
     console.log(input);
 
@@ -44,7 +46,7 @@ export const RegisterPage: React.FC = () => {
 
     const result = regex.test(input.email);
     if (!result) {
-      setError("Invaild email address.");
+      setError("Invalid email address.");
       setShake("shake");
       return;
     }
@@ -56,20 +58,25 @@ export const RegisterPage: React.FC = () => {
     //   return;
     // }
 
-    register(input.email, input.password, input.username, input.access)
-      .then((user) => {
-        console.log("Registered user:", user);
+    try {
+      if (authContext?.register) {
+        await authContext.register(
+          input.email,
+          input.password,
+          input.username,
+          input.access
+        );
         showToast("User registered successfully.", "success");
         setError("");
         navigate("/");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log("Error registering user:", errorCode, errorMessage);
-        setError(errorMessage);
-        setShake("shake");
-      });
+      } else {
+        throw new Error("Registration function not available");
+      }
+    } catch (error: any) {
+      console.log("Error registering user:", error.code, error.message);
+      setError(error.message);
+      setShake("shake");
+    }
   };
 
   const labelClass = "p-3 text-2xl mx-auto w-full";
