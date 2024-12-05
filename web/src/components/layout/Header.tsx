@@ -9,33 +9,41 @@ import {
   Button,
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
-
 import { AuthContext } from "../../context/AuthContext";
-import { logout } from "../../firebase/auth";
-
 import Navigation from "./Navigation";
 
 export default function Header() {
-  const navigator = useNavigate();
+  const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const { user } = useContext(AuthContext) || {};
+  const auth = useContext(AuthContext);
+  const user = auth?.user;
+  const logout = auth?.logout;
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
 
   async function handleLogout() {
-    if (!confirm("Are you sure you want to logout?")) {
-      return;
-    }
+    try {
+      if (!confirm("Are you sure you want to logout?")) {
+        return;
+      }
 
-    await logout();
-    navigator("/login");
+      if (logout) {
+        await logout();
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Error logging out:", error);
+      // Optionally add error handling UI here
+    }
   }
 
   function handleProfile() {
-    navigator(`/profile/${user?.uid}`);
+    if (user?.uid) {
+      navigate(`/profile/${user.uid}`);
+    }
   }
 
   return (
@@ -59,9 +67,8 @@ export default function Header() {
           {user ? (
             <>
               <Button onClick={handleProfile} color="inherit">
-                {user.displayName}
+                {user.displayName || user.email}
               </Button>
-              {/* TODO: Get username from Auth provider */}
               <Button onClick={handleLogout} color="inherit">
                 Logout
               </Button>
@@ -71,7 +78,6 @@ export default function Header() {
               <Button color="inherit" component={Link} to="/login">
                 Login
               </Button>
-
               <Link to="/register">
                 <Button color="inherit">Register</Button>
               </Link>
