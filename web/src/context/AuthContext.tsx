@@ -1,5 +1,5 @@
 import { User, onAuthStateChanged } from "firebase/auth";
-import { createContext, useState, ReactNode } from "react";
+import { createContext, useState, useContext, ReactNode } from "react";
 import { auth } from "../firebase/config";
 
 interface AuthContextType {
@@ -20,17 +20,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/auth.user
       setUser(user);
-      console.log('User is signed in:', user);
+      console.log("User is signed in:", user);
     } else {
       // User is signed out
       setUser(null);
-      console.log('User is signed out');  
+      console.log("User is signed out");
     }
   });
 
   return (
     <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
   );
+};
+
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };
 
 export default AuthProvider;

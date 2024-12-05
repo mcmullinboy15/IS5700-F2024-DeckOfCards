@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import {
   Container,
@@ -14,27 +13,73 @@ import {
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/config";
 import GoogleSignIn from "../components/GoogleSignIn";
+import { FormProvider, useForm } from "../context/FormProvider";
 
-const Login = () => {
+const LoginForm = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const { state, setValue, errors, setErrors, handleSubmit } = useForm<{
+    email: string;
+    password: string;
+  }>();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  const onSubmit = async () => {
+    setErrors({ email: "", password: "" });
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, state.email, state.password);
       navigate("/");
     } catch (error: any) {
       console.error("Error during sign in:", error);
-      setError(error.message || "Failed to sign in");
+      setErrors({
+        email:
+          error.code === "auth/invalid-email" ? "Invalid email address" : "",
+        password:
+          error.code === "auth/wrong-password" ? "Incorrect password" : "",
+      });
     }
   };
 
   return (
+    <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
+      {(errors.email || errors.password) && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errors.email && <div>{errors.email}</div>}
+          {errors.password && <div>{errors.password}</div>}
+        </Alert>
+      )}
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="email"
+        label="Email Address"
+        name="email"
+        autoComplete="email"
+        autoFocus
+        value={state.email || ""}
+        onChange={(e) => setValue("email", e.target.value)}
+      />
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        name="password"
+        label="Password"
+        type="password"
+        id="password"
+        autoComplete="current-password"
+        value={state.password || ""}
+        onChange={(e) => setValue("password", e.target.value)}
+      />
+      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+        Sign In
+      </Button>
+    </Box>
+  );
+};
+
+const Login = () => (
+  <FormProvider onSubmit={() => {}}>
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
@@ -49,49 +94,7 @@ const Login = () => {
             Sign In
           </Typography>
 
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            {/* Email input field */}
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {/* Password input field */}
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {/* Submit button */}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-          </Box>
+          <LoginForm />
 
           <Divider sx={{ my: 2 }}>or</Divider>
 
@@ -108,7 +111,7 @@ const Login = () => {
         </Paper>
       </Box>
     </Container>
-  );
-};
+  </FormProvider>
+);
 
 export default Login;

@@ -50,8 +50,8 @@ export const FormProvider = <T,>({
   );
 };
 
-export const useForm = () => {
-  const context = useContext(FormContext);
+export const useForm = <T,>() => {
+  const context = useContext(FormContext) as FormContextType<T> | undefined;
 
   if (!context) {
     throw new Error("useForm must be used with the provider.");

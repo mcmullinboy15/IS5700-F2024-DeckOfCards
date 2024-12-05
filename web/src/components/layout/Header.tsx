@@ -12,7 +12,7 @@ import { Menu } from "@mui/icons-material";
 import { User } from "firebase/auth";
 
 export default function Header() {
-  // const user = useContext(AuthContext);  // this will be the real call
+  // const user = useAuth();  // this will be the real call
 
   const user: Partial<User> = {
     // dummy data
