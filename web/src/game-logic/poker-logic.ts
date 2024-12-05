@@ -1,3 +1,5 @@
+import { Player } from "./game-types";
+
 // Texas Hold'em logic
 type Suit = 0 | 1 | 2 | 3; // hearts, diamonds, clubs, spades
 type Value = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14; // 1 for ace low, 14 for ace high
@@ -11,8 +13,7 @@ interface Card {
   displaySuit: string;
 }
 
-interface Player {
-  id: number;
+interface PokerPlayer extends Player {
   chips: number;
   cards: Card[];
   bet: number;
@@ -32,7 +33,7 @@ interface Pot {
 
 interface GameState {
   deck: Card[];
-  players: Player[];
+  players: PokerPlayer[];
   pots: Pot[];
   communityCards: Card[];
   currentBet: number;
@@ -89,10 +90,11 @@ function shuffle(deck: Card[]): Card[] {
 
 // initializes a new game with players and starting chips
 function initGame(playerCount: number, startingChips = 1000): GameState {
-  const players: Player[] = Array(playerCount)
+  const players: PokerPlayer[] = Array(playerCount)
     .fill(null)
     .map((_, i) => ({
       id: i,
+      name: `Player ${i + 1}`,
       chips: startingChips,
       cards: [],
       bet: 0,
@@ -126,7 +128,7 @@ function initGame(playerCount: number, startingChips = 1000): GameState {
 }
 
 // gets the next active player starting from a position
-function getNextPlayer(players: Player[], start: number): number {
+function getNextPlayer(players: PokerPlayer[], start: number): number {
   const playerCount = players.length;
   for (let i = 0; i < playerCount; i++) {
     const idx = (start + i) % playerCount;
@@ -385,7 +387,10 @@ function resetHand(game: GameState): GameState {
 }
 
 // determines the winning player(s)
-function getWinners(players: Player[], communityCards: Card[]): Player[] {
+function getWinners(
+  players: PokerPlayer[],
+  communityCards: Card[]
+): PokerPlayer[] {
   const ranked = players
     .map((player) => ({
       player,
@@ -472,4 +477,4 @@ function compareHands(hand1: HandRank, hand2: HandRank): number {
 }
 
 export { initGame, handleAction };
-export type { GameState, Player, Card, Pot };
+export type { GameState, PokerPlayer as Player, Card, Pot };

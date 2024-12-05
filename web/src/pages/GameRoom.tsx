@@ -16,7 +16,6 @@ const GameRoom: React.FC = () => {
   const gameState = useGameState(initialGame);
   const game = gameState.object;
 
-
   const cards1 = [
     <MuiCard sx={{ height: 150, width: 90 }}>Card 1</MuiCard>,
     <MuiCard sx={{ height: 150, width: 90 }}>Card 2</MuiCard>,
@@ -34,10 +33,13 @@ const GameRoom: React.FC = () => {
 
   // ========Example usage for the player information to be passed to this prop===========
 
-  const tempplayers = [{name: "name1", bet:40, cards: cards1, total: 31, busted:false, actionOn:false},
-    {name: "name2", bet:10, cards: cards1, total:15, busted:false},
-    {name: "name3", bet:50, cards: cards2, total:15, busted:false},
-    {name: "name4", bet:15, cards: cards3, total:15, busted:false}];
+
+  const tempplayers = game.players;
+  console.log('tempplayers', tempplayers);
+  // [{name: "name1", bet:40, cards: cards1, total: 31, busted:false, actionOn:false},
+  //   {name: "name2", bet:10, cards: cards1, total:15, busted:false, actionOn:false},
+  //   {name: "name3", bet:50, cards: cards2, total:15, busted:false, actionOn:false},
+  //   {name: "name4", bet:15, cards: cards3, total:15, busted:false, actionOn:true}];
 
   return (
     <div className="h-screen">
@@ -54,8 +56,9 @@ const GameRoom: React.FC = () => {
 
       <div className="flex items-center h-[100%] bg-gray-800 text-white">
         <div className="mx-auto">
-        {game?.gameType == "Blackjack" && <BlackJackTable players={tempplayers} />}
-
+          {game?.gameType == "Blackjack" && (
+            <BlackJackTable players={tempplayers} />
+          )}
         </div>
         <div className="absolute bottom-0 left-0 right-0 flex justify-center space-x-[2%] p-4 h-[12%]">
           <Button
