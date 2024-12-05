@@ -5,7 +5,7 @@ import ChatComponent from "../components/ChatComponent";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import BlackJackTable from "../components/BlackJackTable";
-import MuiCard from "@mui/material/Card";
+// import MuiCard from "@mui/material/Card";
 
 const GameRoom: React.FC = () => {
   const authContext = useContext(AuthContext);
@@ -16,26 +16,25 @@ const GameRoom: React.FC = () => {
   const gameState = useGameState(initialGame);
   const game = gameState.object;
 
-  const cards1 = [
-    <MuiCard sx={{ height: 150, width: 90 }}>Card 1</MuiCard>,
-    <MuiCard sx={{ height: 150, width: 90 }}>Card 2</MuiCard>,
-  ];
-  const cards2 = [
-    <MuiCard sx={{ height: 150, width: 90 }}>Card 3</MuiCard>,
-    <MuiCard sx={{ height: 150, width: 90 }}>Card 4</MuiCard>,
-    <MuiCard sx={{ height: 150, width: 90 }}>Card 3</MuiCard>,
-    <MuiCard sx={{ height: 150, width: 90 }}>Card 4</MuiCard>,
-  ];
-  const cards3 = [
-    <MuiCard sx={{ height: 150, width: 90 }}>Card 5</MuiCard>,
-    <MuiCard sx={{ height: 150, width: 90 }}>Card 6</MuiCard>,
-  ];
+  // const cards1 = [
+  //   <MuiCard sx={{ height: 150, width: 90 }}>Card 1</MuiCard>,
+  //   <MuiCard sx={{ height: 150, width: 90 }}>Card 2</MuiCard>,
+  // ];
+  // const cards2 = [
+  //   <MuiCard sx={{ height: 150, width: 90 }}>Card 3</MuiCard>,
+  //   <MuiCard sx={{ height: 150, width: 90 }}>Card 4</MuiCard>,
+  //   <MuiCard sx={{ height: 150, width: 90 }}>Card 3</MuiCard>,
+  //   <MuiCard sx={{ height: 150, width: 90 }}>Card 4</MuiCard>,
+  // ];
+  // const cards3 = [
+  //   <MuiCard sx={{ height: 150, width: 90 }}>Card 5</MuiCard>,
+  //   <MuiCard sx={{ height: 150, width: 90 }}>Card 6</MuiCard>,
+  // ];
 
   // ========Example usage for the player information to be passed to this prop===========
 
-
   const tempplayers = game.players;
-  console.log('tempplayers', tempplayers);
+  console.log("tempplayers", tempplayers);
   // [{name: "name1", bet:40, cards: cards1, total: 31, busted:false, actionOn:false},
   //   {name: "name2", bet:10, cards: cards1, total:15, busted:false, actionOn:false},
   //   {name: "name3", bet:50, cards: cards2, total:15, busted:false, actionOn:false},
