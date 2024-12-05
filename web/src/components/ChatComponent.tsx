@@ -122,7 +122,7 @@ type ChatComponentProps = {
 
 // @ts-ignore
 const ChatComponent = ({ chatName }: ChatComponentProps) => {
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
   const [size, setSize] = useState({ width: 800, height: 500 });
   const [isResizing, setIsResizing] = useState(false);
   const [messagesByChannel, setMessagesByChannel] = useState<
@@ -237,6 +237,13 @@ const ChatComponent = ({ chatName }: ChatComponentProps) => {
               // Add new message if it doesn't exist
               if (!existingMessages.some((msg) => msg.id === newMsg.id)) {
                 existingMessages.push(newMsg);
+                // Only increment unread count if the channel is not muted
+                if (!settings.notifications.mutedChannels.includes(channel.id)) {
+                  setUnreadByChannel((prev) => ({
+                    ...prev,
+                    [channel.id]: (prev[channel.id] || 0) + 1,
+                  }));
+                }
               }
             }
           });
@@ -248,32 +255,7 @@ const ChatComponent = ({ chatName }: ChatComponentProps) => {
         });
       }
     });
-  }, [channelSubscriptions.map((sub) => sub.messages)]);
-
-  // Update unread counts when new messages arrive
-  useEffect(() => {
-    DEFAULT_CHANNELS.forEach((channel, index) => {
-      const channelMessages = channelSubscriptions[index].messages;
-      if (Array.isArray(channelMessages)) {
-        // Only increment unread if it's not the current channel
-        if (channel.id !== currentChannel.id) {
-          const newMessages = channelMessages.filter(
-            (msg) =>
-              !messagesByChannel[channel.id]?.some(
-                (existing) => existing.id === msg.id
-              )
-          ).length;
-
-          if (newMessages > 0) {
-            setUnreadByChannel((prev) => ({
-              ...prev,
-              [channel.id]: (prev[channel.id] || 0) + newMessages,
-            }));
-          }
-        }
-      }
-    });
-  }, [channelSubscriptions.map((sub) => sub.messages)]);
+  }, [channelSubscriptions.map((sub) => sub.messages).join(","), settings.notifications.mutedChannels]);
 
   // Updated resize logic
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -527,16 +509,27 @@ const ChatComponent = ({ chatName }: ChatComponentProps) => {
 
   // Apply theme changes
   useEffect(() => {
-    document.documentElement.setAttribute(
-      "data-theme",
-      settings.appearance.theme
-    );
-    if (settings.appearance.theme === "system") {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      document.documentElement.setAttribute(
-        "data-theme",
-        isDark ? "dark" : "light"
-      );
+    const applyTheme = (theme: string) => {
+      document.documentElement.setAttribute('data-theme', theme);
+    };
+
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      if (settings.appearance.theme === 'system') {
+        applyTheme(e.matches ? 'dark' : 'light');
+      }
+    };
+
+    if (settings.appearance.theme === 'system') {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(isDark ? 'dark' : 'light');
+      
+      // Listen for system theme changes
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      mediaQuery.addEventListener('change', handleSystemThemeChange);
+      
+      return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
+    } else {
+      applyTheme(settings.appearance.theme);
     }
   }, [settings.appearance.theme]);
 
@@ -606,6 +599,23 @@ const ChatComponent = ({ chatName }: ChatComponentProps) => {
     notificationPermission,
   ]);
 
+  const toggleMute = (channelId: string) => {
+    setSettings((prev) => {
+      const mutedChannels = prev.notifications.mutedChannels;
+      const isCurrentlyMuted = mutedChannels.includes(channelId);
+      
+      return {
+        ...prev,
+        notifications: {
+          ...prev.notifications,
+          mutedChannels: isCurrentlyMuted
+            ? mutedChannels.filter((id) => id !== channelId)
+            : [...mutedChannels, channelId],
+        },
+      };
+    });
+  };
+
   return (
     <div
       className={`chat-widget ${isMinimized ? "minimized" : ""} ${
@@ -649,33 +659,22 @@ const ChatComponent = ({ chatName }: ChatComponentProps) => {
                     }`}
                   >
                     <span className="channel-name">{channel.name}</span>
-                    {unreadByChannel[channel.id] > 0 && (
+                    {unreadByChannel[channel.id] > 0 && !settings.notifications.mutedChannels.includes(channel.id) && (
                       <span className="unread-badge">
                         {unreadByChannel[channel.id]}
                       </span>
                     )}
                   </button>
-
-                  {channel.type !== "public" && (
-                    <button
-                      onClick={() =>
-                        handleSubscription(
-                          channel.id,
-                          !subscribedChannels.has(channel.id)
-                        )
-                      }
-                      className={`subscribe-button ${
-                        subscribedChannels.has(channel.id) ? "subscribed" : ""
-                      }`}
-                      title={
-                        subscribedChannels.has(channel.id)
-                          ? "Unsubscribe from channel"
-                          : "Subscribe to channel"
-                      }
-                    >
-                      {subscribedChannels.has(channel.id) ? "🔔" : "🔕"}
-                    </button>
-                  )}
+                  <button
+                    className="mute-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleMute(channel.id);
+                    }}
+                    title={settings.notifications.mutedChannels.includes(channel.id) ? "Unmute channel" : "Mute channel"}
+                  >
+                    {settings.notifications.mutedChannels.includes(channel.id) ? "🔕" : "🔔"}
+                  </button>
                 </div>
               ))}
             </div>
