@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { TextField, Typography, Button, Box } from "@mui/material";
+import { TextField, Typography, Button, Box, styled } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import { AuthContext } from "../context/AuthContext";
 import { useFirestore } from "../firebase/db";
@@ -20,6 +20,57 @@ interface newGame {
   gameType: string;
 }
 
+const StyledContainer = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "100vh",
+  background: "linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%)",
+  color: "white",
+});
+
+const StyledForm = styled(Box)({
+  backgroundColor: "rgba(17, 25, 40, 0.85)",
+  borderRadius: "12px",
+  padding: "32px",
+  maxWidth: "500px",
+  width: "100%",
+  boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.2)",
+});
+
+const StyledTextField = styled(TextField)({
+  "& .MuiInputBase-root": {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    color: "white",
+  },
+  "& .MuiInputLabel-root": {
+    color: "rgba(255, 255, 255, 0.7)",
+  },
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "rgba(255, 255, 255, 0.3)",
+    },
+    "&:hover fieldset": {
+      borderColor: "rgba(255, 255, 255, 0.5)",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "rgba(139, 92, 246, 0.9)",
+    },
+  },
+});
+
+const StyledButton = styled(Button)({
+  backgroundColor: "rgba(139, 92, 246, 0.9)",
+  color: "white",
+  textTransform: "none",
+  borderRadius: "8px",
+  padding: "12px 24px",
+  fontWeight: "bold",
+  "&:hover": {
+    backgroundColor: "rgba(139, 92, 246, 1)",
+  },
+});
+
 const CreateGame: React.FC = () => {
   const { addDocument } = useFirestore();
   const { gameType } = useParams<{ gameType: string }>();
@@ -29,6 +80,7 @@ const CreateGame: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([]);
 
   const navigate = useNavigate();
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -70,37 +122,46 @@ const CreateGame: React.FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 400, margin: "auto", padding: 2 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Start a {gameType} Game
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <Box sx={{ marginBottom: 2 }}>
-          <TextField
+    <StyledContainer>
+      <StyledForm as="form" onSubmit={handleSubmit}>
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          sx={{
+            textAlign: "center",
+            fontWeight: 700,
+            marginBottom: "16px",
+          }}
+        >
+          Start a {gameType} Game
+        </Typography>
+        <Box sx={{ marginBottom: 3 }}>
+          <StyledTextField
             label="Game Name"
             variant="outlined"
             fullWidth
             required
-            value={gameName} // Bind value to state
+            value={gameName}
             onChange={handleGameNameChange}
           />
         </Box>
-        <Box sx={{ marginBottom: 2 }}>
-          <TextField
+        <Box sx={{ marginBottom: 3 }}>
+          <StyledTextField
             label="Game Description"
             variant="outlined"
             fullWidth
             multiline
             rows={4}
-            value={gameDesc} // Bind value to state
-            onChange={handleGameDescChange} // Handle input change
+            value={gameDesc}
+            onChange={handleGameDescChange}
           />
         </Box>
-        <Button type="submit" variant="contained" color="primary" fullWidth>
+        <StyledButton type="submit" fullWidth>
           Start Game
-        </Button>
-      </form>
-    </Box>
+        </StyledButton>
+      </StyledForm>
+    </StyledContainer>
   );
 };
 
