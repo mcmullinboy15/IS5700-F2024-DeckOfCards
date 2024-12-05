@@ -15,6 +15,7 @@ type RegisterUser = {
   password: string;
   confirmPassword: string;
   access: string;
+  username: string;
 };
 
 export const RegisterPage: React.FC = () => {
@@ -48,14 +49,14 @@ export const RegisterPage: React.FC = () => {
       return;
     }
 
-    const isVerified = await verifyDomain(input.email);
-    if (!isVerified) {
-      setError("Email domain is not allowed.");
-      setShake("shake");
-      return;
-    }
+    // const isVerified = await verifyDomain(input.email);
+    // if (!isVerified) {
+    //   setError("Email domain is not allowed.");
+    //   setShake("shake");
+    //   return;
+    // }
 
-    register(input.email, input.password)
+    register(input.email, input.password, input.username, input.access)
       .then((user) => {
         console.log("Registered user:", user);
         showToast("User registered successfully.", "success");
@@ -85,6 +86,13 @@ export const RegisterPage: React.FC = () => {
           label="Email:"
           type="email"
           name="email"
+        />
+        <TextInput
+          labelClass={labelClass}
+          inputClass={inputClass}
+          label="Username:"
+          type="text"
+          name="username"
         />
         <TextInput
           labelClass={labelClass}
