@@ -1,11 +1,30 @@
-import {
-  createDeck,
-  drawCard,
-  shuffleDeck,
-  addCardsToPile,
-  listPile,
-  Card,
-} from "./api";
+import { useState } from "react";
+import { createDeck, drawCard, shuffleDeck, Card } from "./api";
+
+// Type definitions for state and functions
+interface GameState {
+  playerHand: Card[];
+  dealerHand: Card[];
+  playerScore: number;
+  dealerScore: number;
+  gameEvents: string[];
+  gameStatus:
+    | "waiting"
+    | "inProgress"
+    | "playerTurn"
+    | "dealerTurn"
+    | "completed";
+  deckId: string | null;
+}
+
+interface UseBlackjackReturn {
+  state: GameState;
+  startGame: () => Promise<void>;
+  playPlayerTurn: () => Promise<void>;
+  playDealerTurn: () => Promise<void>;
+  resetGame: () => void;
+  getGameEvents: () => string[];
+}
 
 const getCardValue = (card: Card) => {
   const faceCards = ["KING", "QUEEN", "JACK"];
@@ -14,17 +33,15 @@ const getCardValue = (card: Card) => {
   return parseInt(card.value);
 };
 
-const calculateHandValue = async (deck_id: string, pile_name: string) => {
-  const { piles } = await listPile(deck_id, pile_name);
+const calculateHandValue = (hand: Card[]) => {
   let total = 0;
   let aceCount = 0;
 
-  for (const card of piles[pile_name].cards) {
+  hand.forEach((card) => {
     total += getCardValue(card);
     if (card.value === "ACE") aceCount++;
-  }
+  });
 
-  // Adjust ACE value from 11 to 1 if total goes over 21
   while (total > 21 && aceCount > 0) {
     total -= 10;
     aceCount--;
@@ -33,107 +50,133 @@ const calculateHandValue = async (deck_id: string, pile_name: string) => {
   return total;
 };
 
-const dealInitialCards = async (
-  deck_id: string,
-  playerPile: string,
-  dealerPile: string
-) => {
-  const playerCards = (await drawCard(deck_id, 2)).cards;
-  const dealerCards = (await drawCard(deck_id, 2)).cards;
+export const useBlackjack = (): UseBlackjackReturn => {
+  const [state, setState] = useState<GameState>({
+    playerHand: [],
+    dealerHand: [],
+    playerScore: 0,
+    dealerScore: 0,
+    gameEvents: [],
+    gameStatus: "waiting",
+    deckId: null,
+  });
 
-  await addCardsToPile(
-    deck_id,
-    playerPile,
-    playerCards.map((card: Card) => card.code)
-  );
-  await addCardsToPile(
-    deck_id,
-    dealerPile,
-    dealerCards.map((card: Card) => card.code)
-  );
+  const startGame = async () => {
+    const deck = await createDeck(false);
+    await shuffleDeck(deck.deck_id);
 
-  console.log(
-    `Player's initial hand: ${playerCards
-      .map((card: Card) => card.code)
-      .join(", ")}`
-  );
-  console.log(
-    `Dealer's initial hand: ${dealerCards
-      .map((card: Card) => card.code)
-      .join(", ")}`
-  );
+    const playerCards = (await drawCard(deck.deck_id, 2)).cards;
+    const dealerCards = (await drawCard(deck.deck_id, 2)).cards;
 
-  return { playerPile, dealerPile };
-};
+    setState({
+      playerHand: playerCards,
+      dealerHand: dealerCards,
+      playerScore: calculateHandValue(playerCards),
+      dealerScore: calculateHandValue(dealerCards),
+      gameEvents: [
+        "Game started.",
+        `Player dealt: ${playerCards
+          .map((card: { code: any }) => card.code)
+          .join(", ")}`,
+        `Dealer dealt: ${dealerCards
+          .map((card: { code: any }) => card.code)
+          .join(", ")}`,
+      ],
+      gameStatus: "playerTurn",
+      deckId: deck.deck_id,
+    });
+  };
 
-const checkBlackjack = async (deck_id: string, pile_name: string) =>
-  (await calculateHandValue(deck_id, pile_name)) === 21;
+  const playPlayerTurn = async () => {
+    if (state.gameStatus !== "playerTurn" || !state.deckId) return;
 
-// BlackJack game logic
-const playBlackJack = async () => {
-  const deck = await createDeck(false);
-  const deck_id = deck.deck_id;
-  await shuffleDeck(deck_id);
+    const newCard = (await drawCard(state.deckId, 1)).cards[0];
+    const updatedHand = [...state.playerHand, newCard];
+    const newScore = calculateHandValue(updatedHand);
 
-  const playerPile = "playerPile";
-  const dealerPile = "dealerPile";
+    setState((prevState) => ({
+      ...prevState,
+      playerHand: updatedHand,
+      playerScore: newScore,
+      gameEvents: [
+        ...prevState.gameEvents,
+        `Player draws: ${newCard.code}. New score: ${newScore}`,
+      ],
+    }));
 
-  const { playerPile: playerHand, dealerPile: dealerHand } =
-    await dealInitialCards(deck_id, playerPile, dealerPile);
-
-  // Check for win at start of game
-  if (
-    (await checkBlackjack(deck_id, playerHand)) &&
-    (await checkBlackjack(deck_id, dealerHand))
-  ) {
-    return "It's a tie! Both player and dealer have BlackJack.";
-  } else if (await checkBlackjack(deck_id, playerHand)) {
-    return "Player wins with a BlackJack!";
-  } else if (await checkBlackjack(deck_id, dealerHand)) {
-    return "Dealer wins with a BlackJack!";
-  }
-
-  // Player's Turn
-  let playerValue = await calculateHandValue(deck_id, playerHand);
-  let playerTurnOver = false;
-
-  while (!playerTurnOver) {
-    console.log(`Player's current hand value: ${playerValue}`);
-    if (playerValue < 17) {
-      const newCard = (await drawCard(deck_id)).cards[0];
-      await addCardsToPile(deck_id, playerHand, [newCard.code]);
-      playerValue = await calculateHandValue(deck_id, playerHand);
-      console.log(
-        `Player draws ${newCard.code}. New hand value: ${playerValue}`
-      );
-      if (playerValue > 21) return "Player busts! Dealer wins.";
-    } else {
-      playerTurnOver = true;
+    if (newScore > 21) {
+      setState((prevState) => ({
+        ...prevState,
+        gameEvents: [...prevState.gameEvents, "Player busts! Dealer wins."],
+        gameStatus: "completed",
+      }));
     }
-  }
+  };
 
-  // Dealer's Turn
-  let dealerValue = await calculateHandValue(deck_id, dealerHand);
-  while (dealerValue < 17) {
-    const newCard = (await drawCard(deck_id)).cards[0];
-    await addCardsToPile(deck_id, dealerHand, [newCard.code]);
-    dealerValue = await calculateHandValue(deck_id, dealerHand);
-    console.log(`Dealer draws ${newCard.code}. New hand value: ${dealerValue}`);
-    if (dealerValue > 21) return "Dealer busts! Player wins.";
-  }
+  const playDealerTurn = async () => {
+    if (state.gameStatus !== "dealerTurn" || !state.deckId) return;
 
-  // Compare hands for winner
-  console.log(`Player's final hand value: ${playerValue}`);
-  console.log(`Dealer's final hand value: ${dealerValue}`);
+    let dealerHand = [...state.dealerHand];
+    let dealerScore = state.dealerScore;
 
-  if (playerValue > dealerValue) {
-    return "Player wins!";
-  } else if (playerValue < dealerValue) {
-    return "Dealer wins!";
-  } else {
-    return "It's a tie!";
-  }
+    while (dealerScore < 17) {
+      const newCard = (await drawCard(state.deckId, 1)).cards[0];
+      dealerHand.push(newCard);
+      dealerScore = calculateHandValue(dealerHand);
+
+      setState((prevState) => ({
+        ...prevState,
+        dealerHand,
+        dealerScore,
+        gameEvents: [
+          ...prevState.gameEvents,
+          `Dealer draws: ${newCard.code}. New score: ${dealerScore}`,
+        ],
+      }));
+
+      if (dealerScore > 21) {
+        setState((prevState) => ({
+          ...prevState,
+          gameEvents: [...prevState.gameEvents, "Dealer busts! Player wins."],
+          gameStatus: "completed",
+        }));
+        return;
+      }
+    }
+
+    // Determine winner
+    const { playerScore } = state;
+    let outcome = "It's a tie!";
+    if (playerScore > dealerScore) outcome = "Player wins!";
+    else if (playerScore < dealerScore) outcome = "Dealer wins!";
+
+    setState((prevState) => ({
+      ...prevState,
+      gameEvents: [...prevState.gameEvents, outcome],
+      gameStatus: "completed",
+    }));
+  };
+
+  const resetGame = () => {
+    setState({
+      playerHand: [],
+      dealerHand: [],
+      playerScore: 0,
+      dealerScore: 0,
+      gameEvents: [],
+      gameStatus: "waiting",
+      deckId: null,
+    });
+  };
+
+  const getGameEvents = () => state.gameEvents;
+
+  return {
+    state,
+    startGame,
+    playPlayerTurn,
+    playDealerTurn,
+    resetGame,
+    getGameEvents,
+  };
 };
-
-// Play the game
-playBlackJack().then(console.log).catch(console.error);
