@@ -336,7 +336,13 @@ const ChatComponent = ({ chatName }: ChatComponentProps) => {
     messageId: string,
     reactionType: Reaction["type"]
   ) => {
-    const userId = "testUser123"; // TODO: Replace with actual user ID from auth
+    // Access the user from AuthContext
+    const authContext = useContext(AuthContext);
+
+    const userId =
+      authContext?.user?.displayName ||
+      authContext?.user?.email?.split("@")[0] ||
+      "Guest";
 
     const messageToUpdate = currentMessages.find((msg) => msg.id === messageId);
     if (!messageToUpdate) {
