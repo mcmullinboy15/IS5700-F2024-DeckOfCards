@@ -1,13 +1,8 @@
 import { Button } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import useGameState from "../hooks/useGameState";
-import ChatComponent from "../components/ChatComponent";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 
 const GameRoom: React.FC = () => {
-  const authContext = useContext(AuthContext);
-  const user = authContext?.user;
 
   const location = useLocation();
   const { game: initialGame } = location.state || {};
@@ -81,13 +76,6 @@ const GameRoom: React.FC = () => {
           {/* This would come from game state/status */}
         </div>
       </div>
-      {user ? (
-        <ChatComponent chatName="Game Room Chat" />
-      ) : (
-        <div className="text-center mt-4 text-red-500">
-          Please sign in to access the chat.
-        </div>
-      )}
     </div>
   );
 };
